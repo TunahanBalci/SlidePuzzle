@@ -42,6 +42,10 @@ public class Randomizer {
         for (int row = 0; row < limit; row++){
             for (int col = 0; col < limit; col++){
 
+                if (initialNumbers.size() == 0){
+                    break;
+                }
+
                 int randomIndex = random.nextInt(initialNumbers.size());
 
                 randomizedNumbers.add(initialNumbers.get(randomIndex));
