@@ -3,6 +3,8 @@ package com.binarybrotherhood.slidepuzzle;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.effect.DropShadow;
@@ -74,9 +76,6 @@ public class NumbersPuzzle extends Application {
                 backgroundCell[row][col].setStroke(Color.BLACK);
                 backgroundCell[row][col].strokeProperty();
 
-                backgroundCell[row][col].setArcWidth(15.0);
-                backgroundCell[row][col].setArcHeight(10.0);
-
 
 
                 // ADJUST RECTANGLE POSITIONS
@@ -111,7 +110,7 @@ public class NumbersPuzzle extends Application {
 
                 int temp = (int) Math.round(mainStage.getWidth() / 8.0 / (double) SelectionMenu.gridSize);
 
-                numbers[row][col].setStyle(" -fx-text-fill:#000000; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + temp + ";");
+                numbers[row][col].setStyle(" -fx-text-fill:#2c2180; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + temp + ";");
 
 
 
@@ -161,7 +160,7 @@ public class NumbersPuzzle extends Application {
 
                 int temp = (int) Math.round(mainStage.getWidth() / 8.0 / (double) SelectionMenu.gridSize);
 
-                numbers[row][col].setStyle(" -fx-text-fill:#000000; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + temp + ";");
+                numbers[row][col].setStyle(" -fx-text-fill:#2c2180; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + temp + ";");
             }}
 
         //END-------------------------------------------------
@@ -194,7 +193,7 @@ public class NumbersPuzzle extends Application {
 
                     int temp = (int) Math.round(mainStage.getWidth() / 8.0 / (double) SelectionMenu.gridSize);
 
-                    numbers[row][col].setStyle(" -fx-text-fill:#000000; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + temp + ";");
+                    numbers[row][col].setStyle(" -fx-text-fill:#2c2180; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + temp + ";");
 
 
 
@@ -245,7 +244,7 @@ public class NumbersPuzzle extends Application {
 
                     int temp = (int) Math.round(newResolution.doubleValue() / 8.0 / (double) SelectionMenu.gridSize);
 
-                    numbers[row][col].setStyle(" -fx-text-fill:#000000; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + temp + ";");
+                    numbers[row][col].setStyle(" -fx-text-fill:#2c2180; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + temp + ";");
 
 
 
@@ -281,7 +280,7 @@ public class NumbersPuzzle extends Application {
 
                     int temp = (int) Math.round(mainStage.getWidth() / 8.0 / (double) SelectionMenu.gridSize);
 
-                    numbers[row][col].setStyle(" -fx-text-fill:#000000; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + temp + ";");
+                    numbers[row][col].setStyle(" -fx-text-fill:#2c2180; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + temp + ";");
 
 
                     numbers[row][col].setAlignment(Pos.CENTER);
@@ -293,6 +292,21 @@ public class NumbersPuzzle extends Application {
 
         timeline.setCycleCount(20);
         timeline.play();
+
+        //END-------------------------------------------------
+
+
+
+        //START-------------------------------------------------
+        // LISTENS FOR MAXIMIZED STAGE (TO ALIGN SCENE ELEMENTS)
+        mainStage.maximizedProperty().addListener(new ChangeListener<Boolean>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
+
+                timeline.play();
+            }
+        });
 
         //END-------------------------------------------------
 
@@ -315,6 +329,19 @@ public class NumbersPuzzle extends Application {
                 mainStage.setFullScreen(fullscreen);
             }
 
+            if (event.getCode() == KeyCode.UP){
+                System.out.println("UP ARROW");
+            }
+            if (event.getCode() == KeyCode.DOWN){
+                System.out.println("DOWN ARROW");
+            }
+            if (event.getCode() == KeyCode.LEFT){
+                System.out.println("LEFT ARROW");
+            }
+            if (event.getCode() == KeyCode.RIGHT){
+                System.out.println("RIGHT ARROW");
+            }
+
             event.consume();
         });
 
@@ -326,7 +353,7 @@ public class NumbersPuzzle extends Application {
         // ADJUST AND SET THE STAGE
 
         mainStage.getIcons().add(new Image("/icon.png")); //APP ICON
-        mainStage.setTitle("Numbers Sliding Puzzle"); // APP TITLE
+        mainStage.setTitle("Slide Puzzle"); // APP TITLE
         mainStage.setScene(scene);
         mainStage.show();
 

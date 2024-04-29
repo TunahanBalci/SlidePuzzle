@@ -1,5 +1,10 @@
 package com.binarybrotherhood.slidepuzzle;
 
+import javafx.scene.input.KeyCode;
+
+import java.util.Objects;
+import java.util.Set;
+
 public class Checks {
 
 
@@ -51,4 +56,18 @@ public class Checks {
     //END-------------------------------------------------
 
 
+    public static boolean checkKeys(KeyCode candidate, String session){
+
+        if (
+                Objects.requireNonNull(candidate) == Settings.getKey_UP()
+                || Objects.requireNonNull(candidate) == Settings.getKey_DOWN()
+                || Objects.requireNonNull(candidate) == Settings.getKey_RIGHT()
+                || Objects.requireNonNull(candidate) == Settings.getKey_LEFT()
+                || Objects.requireNonNull(candidate) == KeyCode.ESCAPE
+                || Objects.requireNonNull(candidate) == KeyCode.WINDOWS
+        ){
+            return false;
+        }
+            return true;
+    }
 }
