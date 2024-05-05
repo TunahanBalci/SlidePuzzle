@@ -1,11 +1,25 @@
 package com.binarybrotherhood.slidepuzzle;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Random;
 
 public class Randomizer {
 
     public static ComparableElements [][] getRandomArray(int limit, String type){
+
+        while (true){
+
+            ComparableElements[][] candidate = createRandomArray(limit, type);
+
+            if (Checks.isSolvable(candidate)){
+                return candidate;
+            }
+        }
+    }
+
+    private static ComparableElements[][] createRandomArray(int limit, String type){
+
         //START-------------------------------------------------
         // CREATE RANDOM OBJECT (FOR RANDOMIZED INDEX)
 
@@ -42,7 +56,7 @@ public class Randomizer {
         for (int row = 0; row < limit; row++){
             for (int col = 0; col < limit; col++){
 
-                if (initialNumbers.size() == 0){
+                if (initialNumbers.isEmpty()){
                     break;
                 }
 

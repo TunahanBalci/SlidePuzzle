@@ -2,6 +2,7 @@ package com.binarybrotherhood.slidepuzzle;
 
 import javafx.scene.input.KeyCode;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Set;
 
@@ -13,48 +14,62 @@ public class Checks {
     // CHECK IF ALL OF THE INDEXES OF SELECTED ARRAY ALIGNS TO THE SPECIFIED ORDER
     // IN OUR CASE: 1 -> 2 -> 3 ... (8 or 15) FOR NUMBER PUZZLE
 
-    public boolean inCorrectOrder(ComparableElements[][] input){
+    public static boolean inCorrectOrder(ComparableElements[][] input) {
+
+        ArrayList<ComparableElements> linearArray = new ArrayList<>();
+
+        for (int row = 0; row < SelectionMenu.getGridSize(); row++) {
+            for (int col = 0; col < SelectionMenu.getGridSize(); col++) {
+
+                linearArray.add(input[row][col]);
+            }
+        }
 
         // CREATE COUNT VARIABLE FOR COUNTING THE NUMBER OF TOTAL ALIGNMENTS
 
         int count = 0;
 
+        for (int i = 0; i < linearArray.size(); i++) {
 
-
-        // LOOP TO CHECK EACH ELEMENT OF 2D ARRAY
-
-        for (int row = 0; row < SelectionMenu.gridSize; row++){
-            for (int col = 0; col < SelectionMenu.gridSize; col++){
-
-                // IF THE INDEX OF SELECTED ROW AND COLUMN IS 1 LOWER THAN THE INDEX OF THE NEXT COLUMN (OR ROW) ,INCREASE COUNT
-
-                if (input[row][col + 1].index == input[row][col + 1].index + 1) {
-                    count++;
-                }
-                else { // TO OPTIMIZE THE LOOP
-                    break;
-                }
-                }
+            if (i == linearArray.size() - 1) {
+                break;
             }
 
+            if (linearArray.get(i + 1).index == linearArray.get(i).index + 1){
+                count++;
+            }
 
-
-        // IF COUNT IS INCREMENTED THE AMOUNT OF TOTAL ADJACENT INDEXES, RETURN TRUE
-        // THIS MEANS THAT ALL THE NUMBERS ARE IN CORRECT ORDER
-
-        if (count == (SelectionMenu.gridSize * SelectionMenu.gridSize - 1)) {
-            return true;
         }
 
-
-
-        // OTHERWISE, RETURN FALSE
-
-        return false;
+        return (count == linearArray.size() - 2);
     }
-
     //END-------------------------------------------------
 
+    public static boolean isSolvable(ComparableElements[][] candidate){
+
+        int [] linearArray = new int[SelectionMenu.getGridSize() * SelectionMenu.getGridSize() - 1];
+
+        int inverseCount = 0;
+
+        for (int row = 0; row < SelectionMenu.getGridSize(); row++){
+            for (int col = 0; col < SelectionMenu.getGridSize(); col++){
+
+                if (row == SelectionMenu.getGridSize() - 1 && col == SelectionMenu.getGridSize() - 1){
+                    break;
+                }
+
+                linearArray[row * SelectionMenu.getGridSize() + col] = candidate[row][col].index;
+            }
+        }
+
+        for (int i = 0; i < linearArray.length - 1; i++){
+            if (linearArray[i + 1] < linearArray[i]){
+                inverseCount++;
+            }
+        }
+
+        return inverseCount % 2 == 0;
+    }
 
     public static boolean checkKeys(KeyCode candidate, String session){
 

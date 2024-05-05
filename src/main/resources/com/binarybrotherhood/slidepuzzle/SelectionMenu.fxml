@@ -43,7 +43,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.binarybrotherhood.slidepuzzle.Controller">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.binarybrotherhood.slidepuzzle.SelectionMenuController">
     <AnchorPane VBox.vgrow="ALWAYS">
         <Label id="headerSettings" layoutX="456.0" layoutY="50.0" text="SETTINGS">
             <font>
@@ -52,23 +52,23 @@
         </Label>
         <Rectangle arcHeight="5.0" arcWidth="5.0" height="427.0" layoutX="-8.0" layoutY="-9.0" stroke="BLACK" strokeType="INSIDE" width="664.0">
             <fill>
-                <LinearGradient startY="1.0">
+                <LinearGradient endX="1.0" endY="1.0" startY="1.0">
                     <stops>
                         <Stop>
                             <color>
-                                <Color red="0.20000000298023224" green="0.3843137323856354" blue="0.8941176533699036" />
+                                <Color red="0.22685185074806213" green="0.4706180989742279" blue="0.6447368264198303" />
                             </color>
                         </Stop>
                         <Stop offset="1.0">
                             <color>
-                                <Color red="0.8509804010391235" green="0.32156863808631897" blue="0.572549045085907" />
+                                <Color red="0.16349902749061584" green="0.33393436670303345" blue="0.8026315569877625" />
                             </color>
                         </Stop>
                     </stops>
                 </LinearGradient>
             </fill>
         </Rectangle>
-        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#5b5b5b" height="381.0" layoutX="14.0" layoutY="19.0" stroke="BLACK" strokeType="INSIDE" width="624.0" />
+        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#213443" height="381.0" layoutX="14.0" layoutY="19.0" stroke="BLACK" strokeType="INSIDE" width="624.0" />
         <Label id="headerGameMode" layoutX="65.0" layoutY="50.0" text="SELECT GAME MODE" textFill="WHITE" underline="true">
             <font>
                 <Font name="Tw Cen MT Condensed Extra Bold" size="31.0" />
@@ -144,13 +144,13 @@
                 <Font name="Tw Cen MT" size="11.0" />
             </font>
         </Button>
-        <ImageView id="gameMode" fx:id="gameImage" fitHeight="176.0" fitWidth="232.0" layoutX="65.0" layoutY="114.0" pickOnBounds="true" preserveRatio="true" />
-        <Label fx:id="playImage_label1" layoutX="144.0" layoutY="108.0" onMouseEntered="#showHoverText" onMouseExited="#showHoverText" opacity="0.0" text="▶" textFill="WHITE">
+        <ImageView id="gameMode" fx:id="gameImage" fitHeight="176.0" fitWidth="176.0" layoutX="90.0" layoutY="114.0" pickOnBounds="true" preserveRatio="true" />
+        <Label fx:id="playImage_label1" layoutX="144.0" layoutY="122.0" onMouseEntered="#showHoverText" onMouseExited="#showHoverText" opacity="0.0" text="▶" textFill="#213443">
             <font>
                 <Font name="Tw Cen MT Condensed Extra Bold" size="150.0" />
             </font>
         </Label>
-        <Label fx:id="playImage_label2" layoutX="130.0" layoutY="264.0" onMouseEntered="#showHoverText" onMouseExited="#showHoverText" opacity="0.0" text="CLICK TO PLAY!" textFill="WHITE">
+        <Label fx:id="playImage_label2" layoutX="130.0" layoutY="248.0" onMouseEntered="#showHoverText" onMouseExited="#showHoverText" opacity="0.0" text="CLICK TO PLAY!" textFill="#213443">
             <font>
                 <Font name="Tw Cen MT Condensed Extra Bold" size="18.0" />
             </font>
@@ -160,7 +160,7 @@
                 <Font name="Tw Cen MT Condensed" size="20.0" />
             </font>
         </Label>
-      <ImageView id="gameMode" fx:id="detectMouse" fitHeight="176.0" fitWidth="232.0" layoutX="75.0" layoutY="124.0" onMouseEntered="#showPlayText" onMouseExited="#hidePlayText" onMousePressed="#startGame" pickOnBounds="true" preserveRatio="true" />
+      <ImageView id="gameMode" fx:id="detectMouse" fitHeight="176.0" fitWidth="232.0" layoutX="65.0" layoutY="124.0" onMouseEntered="#showPlayText" onMouseExited="#hidePlayText" onMousePressed="#startGame" pickOnBounds="true" preserveRatio="true" />
       <Label fx:id="threeDots" layoutX="456.0" layoutY="128.0" text=" " textFill="WHITE">
          <font>
             <Font name="Tw Cen MT Condensed Extra Bold" size="80.0" />

@@ -14,21 +14,29 @@ import java.io.IOException;
 
 public class SelectionMenu extends Application {
 
-    public static final int gridSize = 4;
-    public static final int gameModeAmount = 3;
-
+    private static int gridSize = 3;
     public static boolean animations = true;
+    public static int gameModeIndex;
 
-    public static int gameIndex = 0;
+
+    public static void setGridSize(int input){
+        gridSize = input;
+    }
+
+    public static int getGridSize(){
+        return gridSize;
+    }
 
 
     @Override
     public void start(Stage stage) throws IOException {
 
+
+
         Settings.initializeSettings();
 
 
-        FXMLLoader fxmlLoader = new FXMLLoader(Controller.class.getResource("SelectionMenu.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(SelectionMenuController.class.getResource("SelectionMenu.fxml"));
 
         stage.setMinHeight(456);
         stage.setMinWidth(672);
@@ -38,6 +46,9 @@ public class SelectionMenu extends Application {
         StackPane root = new StackPane();
         Scene scene = new Scene(fxmlLoader.load(), 400, 640);
 
+        scene.getStylesheets().addAll(getClass().getResource(
+                "stroke.css"
+        ).toExternalForm());
 
 
         Image image = new Image("file:path/to/your/image.jpg"); // Replace with your image path
@@ -71,13 +82,13 @@ public class SelectionMenu extends Application {
 
         scene.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
 
-            if (Controller.getIsSelectingKey()){
+            if (SelectionMenuController.getIsSelectingKey()){
 
                 System.out.println("Key pressed"); //DEBUG
 
-                if (Checks.checkKeys(event.getCode(), Controller.getKeySession())){
+                if (Checks.checkKeys(event.getCode(), SelectionMenuController.getKeySession())){
 
-                    Settings.assignKey(Controller.getKeySession(), event.getCode());
+                    Settings.assignKey(SelectionMenuController.getKeySession(), event.getCode());
                 }
 
             }
@@ -86,4 +97,14 @@ public class SelectionMenu extends Application {
     }
 
 
+
+    public static void main(String[] args) {
+
+        //END-------------------------------------------------
+        // LAUNCH THE PROGRAM
+
+        launch(args);
+
+        //END-------------------------------------------------
+    }
 }

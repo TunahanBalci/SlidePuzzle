@@ -3,18 +3,24 @@ package com.binarybrotherhood.slidepuzzle;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.BoxBlur;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class Controller {
+public class SelectionMenuController {
 
-
-    public Controller(){
-        System.out.println("Controller created");
+    public SelectionMenuController(){
+        System.out.println("SelectionMenuController created");
 
     }
 
@@ -71,6 +77,10 @@ public class Controller {
 
 
     @FXML
+    private ImageView gameImage;
+
+
+    @FXML
     protected void showHoverText(){
 
         System.out.println("TEST");
@@ -99,30 +109,76 @@ public class Controller {
     @FXML
     protected void gameMode_PREVIOUS(){
 
-        System.out.println("DEBUG: Previous Game Mode");
-
-        if (SelectionMenu.gameIndex == 0){
 
 
+        switch(SelectionMenu.gameModeIndex){
+            case 2:
+                SelectionMenu.gameModeIndex = 1;
 
-        } else{
-            SelectionMenu.gameIndex =- 1;
+                playImage_label1.setTextFill(Color.web("#213443"));
+                playImage_label2.setTextFill(Color.web("#213443"));
+                gameImage.setImage(new Image("/icon_4x4.png"));
+                puzzleName.setText("4X4 NUMBER PUZZLE");
+                break;
+            case 1:
+                SelectionMenu.gameModeIndex = 0;
+
+                playImage_label1.setTextFill(Color.web("#213443"));
+                playImage_label2.setTextFill(Color.web("#213443"));
+                gameImage.setImage( new Image("/icon_3x3.png"));
+                puzzleName.setText("3X3 NUMBER PUZZLE");
+                break;
+            case 0:
+                SelectionMenu.gameModeIndex = 2;
+
+                playImage_label1.setTextFill(Color.web("#ffffff"));
+                playImage_label2.setTextFill(Color.web("#ffffff"));
+                gameImage.setImage( new Image("/icon_3x3_picture.png"));
+                puzzleName.setText("3X3 PICTURE PUZZLE");
+                break;
+            default:
+                System.out.println("ERROR: COULDNT SELECT GAME MODE (GAMEMODE_PREVIOUS)");;
         }
+
+        System.out.println("DEBUG: Previous Game Mode");
 
     }
 
     @FXML
     protected void gameMode_NEXT(){
 
-        System.out.println("DEBUG: Next Game Mode");
 
 
-        if (SelectionMenu.gameIndex == 0){
+        switch(SelectionMenu.gameModeIndex){
+            case 0:
+                SelectionMenu.gameModeIndex = 1;
 
-        } else{
-            SelectionMenu.gameIndex =- 1;
+                playImage_label1.setTextFill(Color.web("#213443"));
+                playImage_label2.setTextFill(Color.web("#213443"));
+                gameImage.setImage(new Image("/icon_4x4.png"));
+                puzzleName.setText("4X4 NUMBER PUZZLE");
+                break;
+            case 1:
+                SelectionMenu.gameModeIndex = 2;
+
+                playImage_label1.setTextFill(Color.web("#ffffff"));
+                playImage_label2.setTextFill(Color.web("#ffffff"));
+                gameImage.setImage( new Image("/icon_3x3_picture.png"));
+                puzzleName.setText("3X3 PICTURE PUZZLE");
+                break;
+            case 2:
+                SelectionMenu.gameModeIndex = 0;
+
+                playImage_label1.setTextFill(Color.web("#213443"));
+                playImage_label2.setTextFill(Color.web("#213443"));
+                gameImage.setImage( new Image("/icon_3x3.png"));
+                puzzleName.setText("3X3 NUMBER PUZZLE");
+                break;
+            default:
+                System.out.println("ERROR: COULDNT SELECT GAME MODE (GAMEMODE_NEXT)");;
         }
 
+        System.out.println("DEBUG: Next Game Mode");
     }
 
     @FXML
@@ -208,10 +264,21 @@ public class Controller {
         keySelect_animatedDots();
 
     }
+    BoxBlur blurImage = new BoxBlur();
+    BoxBlur removeBlur = new BoxBlur();
 
     @FXML
     protected void showPlayText(){
         playImage_label1.setVisible(true);
+
+        blurImage.setWidth(8);
+        blurImage.setHeight(8);
+        blurImage.setIterations(8);
+
+
+
+        gameImage.setEffect(blurImage);
+
         playImage_label1.setOpacity(1);
 
         playImage_label2.setVisible(true);
@@ -222,6 +289,12 @@ public class Controller {
     @FXML
     protected void hidePlayText(){
 
+        removeBlur.setWidth(0);
+        removeBlur.setHeight(0);
+        removeBlur.setIterations(0);
+
+        gameImage.setEffect(removeBlur);
+
         playImage_label1.setVisible(false);
 
         playImage_label2.setVisible(false);
@@ -229,6 +302,70 @@ public class Controller {
 
     @FXML
     protected void startGame(){
+
+        Stage old_stage = (Stage) fullscreenButton.getScene().getWindow();
+
+
+
+        old_stage.close();
+
+        switch(SelectionMenu.gameModeIndex) {
+            case 0:
+
+
+                gameImage.setImage(new Image("/icon_3x3.png"));
+                puzzleName.setText("3X3 NUMBER PUZZLE");
+
+                Platform.runLater(()->{
+
+                    try {
+
+                        SelectionMenu.setGridSize(3);
+                        Application application = NumbersPuzzle.class.newInstance();
+
+                        Stage newStage = new Stage();
+                        application.start(newStage);
+
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+                    }
+                });
+
+                break;
+
+            case 1:
+
+                Platform.runLater(()->{
+
+                    try {
+
+                        SelectionMenu.setGridSize(4);
+                        Application application = NumbersPuzzle.class.newInstance();
+
+                        Stage newStage = new Stage();
+                        application.start(newStage);
+
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+                    }
+                });
+
+                gameImage.setImage(new Image("/icon_4x4.png"));
+                puzzleName.setText("4X4 NUMBER PUZZLE");
+                break;
+
+            case 2:
+
+                gameImage.setImage(new Image("/icon_3x3_picture.png"));
+
+                playImage_label1.setTextFill(Color.web("#ffffff"));
+                puzzleName.setText("3X3 PICTURE PUZZLE");
+                break;
+            default:
+                System.out.println("ERROR: IN CONTROLLER INITIALIZE METHOD (IMAGEVIEW SWITCH-CASE)");
+        }
 
         System.out.println("DEBUG: Start game");
     }
@@ -418,5 +555,38 @@ public class Controller {
 
         }
 
+    }
+
+
+    public void initialize(){
+        //System.out.println("INITIALIZED"); //DEBUG
+        playImage_label1.getStyleClass().add("stroke");
+        playImage_label2.getStyleClass().add("stroke");
+
+        switch(SelectionMenu.gameModeIndex) {
+            case 0:
+
+
+                gameImage.setImage(new Image("/icon_3x3.png"));
+                puzzleName.setText("3X3 NUMBER PUZZLE");
+                break;
+
+            case 1:
+
+                gameImage.setImage(new Image("/icon_4x4.png"));
+                puzzleName.setText("4X4 NUMBER PUZZLE");
+                break;
+
+            case 2:
+
+                gameImage.setImage(new Image("/icon_3x3_picture.png"));
+
+                playImage_label1.setTextFill(Color.web("#ffffff"));
+                puzzleName.setText("3X3 PICTURE PUZZLE");
+                break;
+            default:
+                System.out.println("ERROR: IN CONTROLLER INITIALIZE METHOD (IMAGEVIEW SWITCH-CASE)");
+
+        }
     }
 }

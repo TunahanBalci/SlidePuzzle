@@ -21,6 +21,8 @@ import javafx.util.Duration;
 
 public class NumbersPuzzle extends Application {
 
+    public static int emptySquareIndex = 0;
+
     @Override
     public void start(Stage mainStage) {;
 
@@ -40,11 +42,11 @@ public class NumbersPuzzle extends Application {
         //START-------------------------------------------------
         // CREATE AND INITIALIZE ARRAYS
 
-        Rectangle [][] backgroundCell = new Rectangle[SelectionMenu.gridSize][SelectionMenu.gridSize];
+        Rectangle [][] backgroundCell = new Rectangle[SelectionMenu.getGridSize()][SelectionMenu.getGridSize()];
 
-        Label [][] numbers = new Label[SelectionMenu.gridSize][SelectionMenu.gridSize];
+        Label [][] numbers = new Label[SelectionMenu.getGridSize()][SelectionMenu.getGridSize()];
 
-        ComparableElements [][] twinArray = Randomizer.getRandomArray(SelectionMenu.gridSize, "Number");
+        ComparableElements [][] twinArray = Randomizer.getRandomArray(SelectionMenu.getGridSize(), "Number");
 
         //END-------------------------------------------------
 
@@ -53,7 +55,7 @@ public class NumbersPuzzle extends Application {
         //START-------------------------------------------------
         // CREATE AND INITIALIZE RECTANGLESIZE VARIABLE (FOR CALCULATIONS)
 
-        double rectangleSize = (mainStage.getWidth() / 4.0) / SelectionMenu.gridSize;
+        double rectangleSize = (mainStage.getWidth() / 4.0) / SelectionMenu.getGridSize();
 
         //END-------------------------------------------------
 
@@ -62,8 +64,8 @@ public class NumbersPuzzle extends Application {
         //START-------------------------------------------------
         // ADJUST, ADD AND ALIGN RECTANGLES AND ADD NUMBERS
 
-        for (int row = 0; row < SelectionMenu.gridSize; row++) {
-            for (int col = 0; col < SelectionMenu.gridSize; col++) {
+        for (int row = 0; row < SelectionMenu.getGridSize(); row++) {
+            for (int col = 0; col < SelectionMenu.getGridSize(); col++) {
 
                 // CREATE RECTANGLES
 
@@ -90,7 +92,7 @@ public class NumbersPuzzle extends Application {
 
                 // ASSIGN NUMBER LABELS
 
-                if (row == SelectionMenu.gridSize - 1 && col == SelectionMenu.gridSize - 1){
+                if (row == SelectionMenu.getGridSize() - 1 && col == SelectionMenu.getGridSize() - 1){
                     numbers[row][col] = new Label(" ");
                 } else {
                     numbers[row][col] = new Label(String.valueOf(twinArray[row][col].index));
@@ -108,7 +110,7 @@ public class NumbersPuzzle extends Application {
 
                 // ASSIGN INITIAL FONT TO NUMBER LABELS
 
-                int temp = (int) Math.round(mainStage.getWidth() / 8.0 / (double) SelectionMenu.gridSize);
+                int temp = (int) Math.round(mainStage.getWidth() / 8.0 / (double) SelectionMenu.getGridSize());
 
                 numbers[row][col].setStyle(" -fx-text-fill:#2c2180; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + temp + ";");
 
@@ -132,7 +134,7 @@ public class NumbersPuzzle extends Application {
         ds.setOffsetY(3.0f);
         ds.setColor(Color.web("#0d2e36"));
 
-        Label header = new Label(SelectionMenu.gridSize + "x" + SelectionMenu.gridSize + " SLIDING PUZZLE");
+        Label header = new Label(SelectionMenu.getGridSize() + "x" + SelectionMenu.getGridSize() + " SLIDING PUZZLE");
         Font customFont = Font.loadFont(getClass().getResourceAsStream("/fonts/MightySouly.TTF"), 60);
         header.setFont(customFont);
         header.setTextFill(Color.web("#3ebfde"));
@@ -151,14 +153,14 @@ public class NumbersPuzzle extends Application {
         //START-------------------------------------------------
         // CREATE, ADD AND ADJUST NUMBERS
 
-        for (int row = 0; row < SelectionMenu.gridSize; row++){
-            for (int col = 0; col < SelectionMenu.gridSize; col++) {
+        for (int row = 0; row < SelectionMenu.getGridSize(); row++){
+            for (int col = 0; col < SelectionMenu.getGridSize(); col++) {
 
                 numbers[row][col].setAlignment(Pos.CENTER);
                 numbers[row][col].setTranslateX(backgroundCell[row][col].getTranslateX() + backgroundCell[row][col].getWidth() / 2 - numbers[row][col].getWidth() / 2);
                 numbers[row][col].setTranslateY(backgroundCell[row][col].getTranslateY() + backgroundCell[row][col].getHeight() / 2 - numbers[row][col].getHeight() / 2);
 
-                int temp = (int) Math.round(mainStage.getWidth() / 8.0 / (double) SelectionMenu.gridSize);
+                int temp = (int) Math.round(mainStage.getWidth() / 8.0 / (double) SelectionMenu.getGridSize());
 
                 numbers[row][col].setStyle(" -fx-text-fill:#2c2180; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + temp + ";");
             }}
@@ -174,14 +176,14 @@ public class NumbersPuzzle extends Application {
 
             // CREATE AND INITIALIZE DYNAMICSIZE VARIABLE (FOR DYNAMIC RECTANGLE SIZE)
 
-            double dynamicSize = ((mainStage.getWidth() / 4) / SelectionMenu.gridSize);
+            double dynamicSize = ((mainStage.getWidth() / 4) / SelectionMenu.getGridSize());
 
 
 
             // APPLY SPECIFIED TASKS TO ALL ARRAY ELEMENTS:
 
-            for (int row = 0; row < SelectionMenu.gridSize; row++){
-                for (int col = 0; col < SelectionMenu.gridSize; col++){
+            for (int row = 0; row < SelectionMenu.getGridSize(); row++){
+                for (int col = 0; col < SelectionMenu.getGridSize(); col++){
 
                     // CHANGE POSITION OF RECTANGLES ACCORDING TO VERTICAL WINDOW SIZE
 
@@ -191,7 +193,7 @@ public class NumbersPuzzle extends Application {
 
                     // CHANGE FONT SIZE OF NUMBER LABELS ACCORDING TO HORIZONTAL WINDOW SIZE
 
-                    int temp = (int) Math.round(mainStage.getWidth() / 8.0 / (double) SelectionMenu.gridSize);
+                    int temp = (int) Math.round(mainStage.getWidth() / 8.0 / (double) SelectionMenu.getGridSize());
 
                     numbers[row][col].setStyle(" -fx-text-fill:#2c2180; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + temp + ";");
 
@@ -217,14 +219,14 @@ public class NumbersPuzzle extends Application {
 
             // CREATE AND INITIALIZE DYNAMICSIZE VARIABLE (FOR DYNAMIC RECTANGLE SIZE)
 
-            double dynamicSize = (((double) newResolution / 4) / SelectionMenu.gridSize);
+            double dynamicSize = (((double) newResolution / 4) / SelectionMenu.getGridSize());
 
 
 
             // APPLY SPECIFIED TASKS TO ALL ARRAY ELEMENTS:
 
-            for (int row = 0; row < SelectionMenu.gridSize; row++){
-                for (int col = 0; col < SelectionMenu.gridSize; col++){
+            for (int row = 0; row < SelectionMenu.getGridSize(); row++){
+                for (int col = 0; col < SelectionMenu.getGridSize(); col++){
 
                     // CHANGE THE SIZE OF RECTANGLES ACCORDING TO HORIZONTAL WINDOW SIZE
 
@@ -242,7 +244,7 @@ public class NumbersPuzzle extends Application {
 
                     // CHANGE FONT SIZE OF NUMBER LABELS ACCORDING TO HORIZONTAL WINDOW SIZE
 
-                    int temp = (int) Math.round(newResolution.doubleValue() / 8.0 / (double) SelectionMenu.gridSize);
+                    int temp = (int) Math.round(newResolution.doubleValue() / 8.0 / (double) SelectionMenu.getGridSize());
 
                     numbers[row][col].setStyle(" -fx-text-fill:#2c2180; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + temp + ";");
 
@@ -266,10 +268,10 @@ public class NumbersPuzzle extends Application {
 
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.1), event -> {
 
-            double dynamicSize = (mainStage.getWidth() / 4) / SelectionMenu.gridSize;
+            double dynamicSize = (mainStage.getWidth() / 4) / SelectionMenu.getGridSize();
 
-            for (int row = 0; row < SelectionMenu.gridSize; row++){
-                for (int col = 0; col < SelectionMenu.gridSize; col++){
+            for (int row = 0; row < SelectionMenu.getGridSize(); row++){
+                for (int col = 0; col < SelectionMenu.getGridSize(); col++){
 
                     backgroundCell[row][col].setHeight(dynamicSize);
                     backgroundCell[row][col].setWidth(dynamicSize);
@@ -278,7 +280,7 @@ public class NumbersPuzzle extends Application {
                     backgroundCell[row][col].setTranslateY((Resolution.spacingHeight() / (Resolution.height() / mainStage.getHeight())) + (dynamicSize * row));
 
 
-                    int temp = (int) Math.round(mainStage.getWidth() / 8.0 / (double) SelectionMenu.gridSize);
+                    int temp = (int) Math.round(mainStage.getWidth() / 8.0 / (double) SelectionMenu.getGridSize());
 
                     numbers[row][col].setStyle(" -fx-text-fill:#2c2180; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + temp + ";");
 
@@ -311,35 +313,129 @@ public class NumbersPuzzle extends Application {
         //END-------------------------------------------------
 
 
+        for (int row = 0; row < SelectionMenu.getGridSize(); row++){
+            for (int col = 0; col < SelectionMenu.getGridSize(); col++){
+
+                if (twinArray[row][col].index == -1){
+                    emptySquareIndex = row * SelectionMenu.getGridSize() + col;
+                }
+            }
+        }
 
         //START-------------------------------------------------
         // LISTENS FOR KEYSTROKES
 
         scene.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
 
+            int row_OLD = (emptySquareIndex - (emptySquareIndex % SelectionMenu.getGridSize())) / SelectionMenu.getGridSize();
+            int col_OLD = emptySquareIndex % SelectionMenu.getGridSize();
+
             boolean fullscreen = false;
 
-            System.out.println("Key pressed"); //DEBUG
+            System.out.println("Key pressed");
 
-            if (event.getCode() == KeyCode.F11) {
+            if (event.getCode() == KeyCode.F11) { // FULLSCREEN
 
                 fullscreen = !fullscreen;
-                System.out.println("F11 pressed"); //DEBUG
+                System.out.println("F11 pressed");
 
                 mainStage.setFullScreen(fullscreen);
             }
 
-            if (event.getCode() == KeyCode.UP){
-                System.out.println("UP ARROW");
+            else if (event.getCode() == KeyCode.DOWN){ // SWIPE UP
+
+                System.out.println(emptySquareIndex);
+
+                if(row_OLD > 0){
+
+                    emptySquareIndex -= SelectionMenu.getGridSize();
+                    int row = (emptySquareIndex - (emptySquareIndex % SelectionMenu.getGridSize())) / SelectionMenu.getGridSize();
+                    int col = emptySquareIndex % SelectionMenu.getGridSize();
+
+                    numbers[row_OLD][col_OLD].setText(String.valueOf(twinArray[row][col].index));
+
+                    twinArray[row_OLD][col_OLD].index = twinArray[row][col].index;
+                    twinArray[row][col].index = -1;
+
+                    numbers[row][col].setText(" ");
+
+
+                }
+
+
+                if (Checks.inCorrectOrder(twinArray)){
+                    System.out.println("CONGRATULATIONS!!!!");
+                }
+
+
             }
-            if (event.getCode() == KeyCode.DOWN){
-                System.out.println("DOWN ARROW");
+
+            else if (event.getCode() == KeyCode.UP){ // SWIPE DOWN
+
+                if(row_OLD < SelectionMenu.getGridSize() - 1){
+
+                    emptySquareIndex += SelectionMenu.getGridSize();
+                    int row = (emptySquareIndex - (emptySquareIndex % SelectionMenu.getGridSize())) / SelectionMenu.getGridSize();
+                    int col = emptySquareIndex % SelectionMenu.getGridSize();
+
+                    numbers[row_OLD][col_OLD].setText(String.valueOf(twinArray[row][col].index));
+
+                    twinArray[row_OLD][col_OLD].index = twinArray[row][col].index;
+                    twinArray[row][col].index = -1;
+
+                    numbers[row][col].setText(" ");
+                }
+
+                if (Checks.inCorrectOrder(twinArray)){
+                    System.out.println("CONGRATULATIONS!!!!");
+                }
+
             }
-            if (event.getCode() == KeyCode.LEFT){
-                System.out.println("LEFT ARROW");
+
+            else if (event.getCode() == KeyCode.RIGHT){ // SWIPE RIGHT
+
+                System.out.println(emptySquareIndex);
+                if (col_OLD > 0){
+
+                    emptySquareIndex--;
+                    int row = (emptySquareIndex - (emptySquareIndex % SelectionMenu.getGridSize())) / SelectionMenu.getGridSize();
+                    int col = emptySquareIndex % SelectionMenu.getGridSize();
+
+                    System.out.println(emptySquareIndex);
+
+                    numbers[row_OLD][col_OLD].setText(String.valueOf(twinArray[row][col].index));
+
+                    twinArray[row_OLD][col_OLD].index = twinArray[row][col].index;
+                    twinArray[row][col].index = -1;
+
+                    numbers[row][col].setText(" ");
+                }
+
+                if (Checks.inCorrectOrder(twinArray)){
+                    System.out.println("CONGRATULATIONS!!!!");
+                }
             }
-            if (event.getCode() == KeyCode.RIGHT){
-                System.out.println("RIGHT ARROW");
+
+            else if (event.getCode() == KeyCode.LEFT){ // SWIPE LEFT
+
+                if (col_OLD < SelectionMenu.getGridSize() - 1){
+
+                    emptySquareIndex++;
+                    int row = (emptySquareIndex - (emptySquareIndex % SelectionMenu.getGridSize())) / SelectionMenu.getGridSize();
+                    int col = emptySquareIndex % SelectionMenu.getGridSize();
+
+                    numbers[row_OLD][col_OLD].setText(String.valueOf(twinArray[row][col].index));
+
+                    twinArray[row_OLD][col_OLD].index = twinArray[row][col].index;
+                    twinArray[row][col].index = -1;
+
+                    numbers[row][col].setText(" ");
+                }
+
+
+                if (Checks.inCorrectOrder(twinArray)){
+                    System.out.println("CONGRATULATIONS!!!!");
+                }
             }
 
             event.consume();
@@ -366,14 +462,4 @@ public class NumbersPuzzle extends Application {
     }
 
 
-
-    public static void main(String[] args) {
-
-        //END-------------------------------------------------
-        // LAUNCH THE PROGRAM
-
-        launch(args);
-
-        //END-------------------------------------------------
-    }
 }

@@ -49,6 +49,11 @@ public class Settings {
         settings.putIfAbsent("KEY_RIGHT", key_RIGHT);
         settings.putIfAbsent("KEY_LEFT", key_LEFT);
         settings.putIfAbsent("KEY_FULLSCREEN", key_FULLSCREEN);
+
+        key_UP = (KeyCode) settings.get("KEY_UP");
+        key_DOWN = (KeyCode) settings.get("KEY_DOWN");
+        key_RIGHT = (KeyCode) settings.get("KEY_RIGHT");
+        key_LEFT = (KeyCode) settings.get("KEY_LEFT");
     }
 
     // Example accessor:
@@ -62,48 +67,48 @@ public class Settings {
 
         System.out.println("ASSIGNKEY");
 
-        System.out.println("TYPE: " + Controller.getKeySession() + " KEY: " + key);
+        System.out.println("TYPE: " + SelectionMenuController.getKeySession() + " KEY: " + key);
 
-        switch (Controller.getKeySession()){
+        switch (SelectionMenuController.getKeySession()){
 
             case "UP":
 
                 key_UP = key;
                 registerKeySettings("KEY_SLIDE_UP", key.toString());
-                Controller.setSession(type, key);
-                Controller.setIsKeyApproved(true);
+                SelectionMenuController.setSession(type, key);
+                SelectionMenuController.setIsKeyApproved(true);
                 break;
 
             case "DOWN":
 
                 key_DOWN = key;
                 registerKeySettings("KEY_SLIDE_DOWN", key.toString());
-                Controller.setSession(type, key);
-                Controller.setIsKeyApproved(true);
+                SelectionMenuController.setSession(type, key);
+                SelectionMenuController.setIsKeyApproved(true);
                 break;
 
             case "RIGHT":
 
                 key_RIGHT = key;
                 registerKeySettings("KEY_SLIDE_RIGHT", key.toString());
-                Controller.setSession(type, key);
-                Controller.setIsKeyApproved(true);
+                SelectionMenuController.setSession(type, key);
+                SelectionMenuController.setIsKeyApproved(true);
                 break;
 
             case "LEFT":
 
                 key_LEFT = key;
                 registerKeySettings("KEY_SLIDE_LEFT", key.toString());
-                Controller.setSession(type, key);
-                Controller.setIsKeyApproved(true);
+                SelectionMenuController.setSession(type, key);
+                SelectionMenuController.setIsKeyApproved(true);
                 break;
 
             case "FULLSCREEN":
 
                 key_FULLSCREEN = key;
                 registerKeySettings("KEY_SLIDE_FULLSCREEN", key.toString());
-                Controller.setSession(type, key);
-                Controller.setIsKeyApproved(true);
+                SelectionMenuController.setSession(type, key);
+                SelectionMenuController.setIsKeyApproved(true);
                 break;
 
             default:
