@@ -332,12 +332,9 @@ public class NumbersPuzzle extends Application {
 
             boolean fullscreen = false;
 
-            System.out.println("Key pressed");
-
             if (event.getCode() == KeyCode.F11) { // FULLSCREEN
 
                 fullscreen = !fullscreen;
-                System.out.println("F11 pressed");
 
                 mainStage.setFullScreen(fullscreen);
             }
@@ -349,6 +346,7 @@ public class NumbersPuzzle extends Application {
                 if(row_OLD > 0){
 
                     emptySquareIndex -= SelectionMenu.getGridSize();
+
                     int row = (emptySquareIndex - (emptySquareIndex % SelectionMenu.getGridSize())) / SelectionMenu.getGridSize();
                     int col = emptySquareIndex % SelectionMenu.getGridSize();
 
@@ -359,11 +357,13 @@ public class NumbersPuzzle extends Application {
 
                     numbers[row][col].setText(" ");
 
-
+                    numbers[row][col].setAlignment(Pos.CENTER);
+                    numbers[row][col].setTranslateX(backgroundCell[row][col].getTranslateX() + backgroundCell[row][col].getWidth() / 2 - numbers[row][col].getWidth() / 2);
+                    numbers[row][col].setTranslateY(backgroundCell[row][col].getTranslateY() + backgroundCell[row][col].getHeight() / 2 - numbers[row][col].getHeight() / 2);
                 }
 
-
                 if (Checks.inCorrectOrder(twinArray)){
+
                     System.out.println("CONGRATULATIONS!!!!");
                 }
 
@@ -375,6 +375,7 @@ public class NumbersPuzzle extends Application {
                 if(row_OLD < SelectionMenu.getGridSize() - 1){
 
                     emptySquareIndex += SelectionMenu.getGridSize();
+
                     int row = (emptySquareIndex - (emptySquareIndex % SelectionMenu.getGridSize())) / SelectionMenu.getGridSize();
                     int col = emptySquareIndex % SelectionMenu.getGridSize();
 
@@ -384,9 +385,14 @@ public class NumbersPuzzle extends Application {
                     twinArray[row][col].index = -1;
 
                     numbers[row][col].setText(" ");
+
+                    numbers[row][col].setAlignment(Pos.CENTER);
+                    numbers[row][col].setTranslateX(backgroundCell[row][col].getTranslateX() + backgroundCell[row][col].getWidth() / 2 - numbers[row][col].getWidth() / 2);
+                    numbers[row][col].setTranslateY(backgroundCell[row][col].getTranslateY() + backgroundCell[row][col].getHeight() / 2 - numbers[row][col].getHeight() / 2);
                 }
 
                 if (Checks.inCorrectOrder(twinArray)){
+
                     System.out.println("CONGRATULATIONS!!!!");
                 }
 
@@ -401,17 +407,20 @@ public class NumbersPuzzle extends Application {
                     int row = (emptySquareIndex - (emptySquareIndex % SelectionMenu.getGridSize())) / SelectionMenu.getGridSize();
                     int col = emptySquareIndex % SelectionMenu.getGridSize();
 
-                    System.out.println(emptySquareIndex);
-
                     numbers[row_OLD][col_OLD].setText(String.valueOf(twinArray[row][col].index));
 
                     twinArray[row_OLD][col_OLD].index = twinArray[row][col].index;
                     twinArray[row][col].index = -1;
 
                     numbers[row][col].setText(" ");
+
+                    numbers[row][col].setAlignment(Pos.CENTER);
+                    numbers[row][col].setTranslateX(backgroundCell[row][col].getTranslateX() + backgroundCell[row][col].getWidth() / 2 - numbers[row][col].getWidth() / 2);
+                    numbers[row][col].setTranslateY(backgroundCell[row][col].getTranslateY() + backgroundCell[row][col].getHeight() / 2 - numbers[row][col].getHeight() / 2);
                 }
 
                 if (Checks.inCorrectOrder(twinArray)){
+
                     System.out.println("CONGRATULATIONS!!!!");
                 }
             }
@@ -430,10 +439,15 @@ public class NumbersPuzzle extends Application {
                     twinArray[row][col].index = -1;
 
                     numbers[row][col].setText(" ");
+
+                    numbers[row][col].setAlignment(Pos.CENTER);
+                    numbers[row][col].setTranslateX(backgroundCell[row][col].getTranslateX() + backgroundCell[row][col].getWidth() / 2 - numbers[row][col].getWidth() / 2);
+                    numbers[row][col].setTranslateY(backgroundCell[row][col].getTranslateY() + backgroundCell[row][col].getHeight() / 2 - numbers[row][col].getHeight() / 2);
                 }
 
 
                 if (Checks.inCorrectOrder(twinArray)){
+
                     System.out.println("CONGRATULATIONS!!!!");
                 }
             }
