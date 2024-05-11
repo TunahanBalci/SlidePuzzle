@@ -1,15 +1,22 @@
 package com.binarybrotherhood.slidepuzzle;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
+import java.io.File;
 import java.io.IOException;
 
 public class SelectionMenu extends Application {
@@ -17,6 +24,7 @@ public class SelectionMenu extends Application {
     private static int gridSize = 3;
     public static boolean animations = true;
     public static int gameModeIndex;
+    private static boolean isSelectingImage = false;
 
 
     public static void setGridSize(int input){
@@ -27,10 +35,13 @@ public class SelectionMenu extends Application {
         return gridSize;
     }
 
+    public static void setIsSelectingImage(boolean input){
+        isSelectingImage = input;
+    }
+    
 
     @Override
     public void start(Stage stage) throws IOException {
-
 
 
         Settings.initializeSettings();
@@ -46,20 +57,31 @@ public class SelectionMenu extends Application {
         StackPane root = new StackPane();
         Scene scene = new Scene(fxmlLoader.load(), 400, 640);
 
-        scene.getStylesheets().addAll(getClass().getResource(
-                "stroke.css"
-        ).toExternalForm());
+        Timeline selectFileListener = new Timeline(new KeyFrame(Duration.seconds(0.1), event -> {
 
+            if (isSelectingImage) {
 
-        Image image = new Image("file:path/to/your/image.jpg"); // Replace with your image path
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Open Image File");
+                fileChooser.getExtensionFilters().addAll(
 
-        BackgroundImage backgroundImage = new BackgroundImage(image,
-                BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT,
-                BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
+                        new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg")
+                );
 
-        Background background = new Background(backgroundImage);
+                File selectedFile = fileChooser.showOpenDialog(stage);
 
-        root.setBackground(background);
+                if (selectedFile != null) {
+                    Image inputImage = new Image(selectedFile.toURI().toString());
+
+                    PicturePuzzle.assignImage(inputImage);
+                }
+
+                isSelectingImage = false;
+            }
+        }));
+
+        selectFileListener.setCycleCount(Timeline.INDEFINITE);
+        selectFileListener.play();
 
         stage.setScene(scene);
         stage.setTitle("Background Image");
@@ -90,10 +112,12 @@ public class SelectionMenu extends Application {
 
                     Settings.assignKey(SelectionMenuController.getKeySession(), event.getCode());
                 }
-
             }
+
             event.consume();
         });
+
+
     }
 
 

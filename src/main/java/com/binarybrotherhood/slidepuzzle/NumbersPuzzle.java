@@ -14,17 +14,20 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.control.Label;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+
+import java.io.File;
 
 public class NumbersPuzzle extends Application {
 
     public static int emptySquareIndex = 0;
 
     @Override
-    public void start(Stage mainStage) {;
+    public void start(Stage mainStage) {
 
         //START-------------------------------------------------
         // CREATE PANE AND SCENE + ADJUST BACKGROUND
@@ -33,7 +36,7 @@ public class NumbersPuzzle extends Application {
 
         pane.setStyle(" -fx-background-image: url('background.jfif'); -fx-background-position: center center;");
 
-        Scene scene = new Scene(pane, Resolution.width(), Resolution.height());;
+        Scene scene = new Scene(pane, Resolution.width() * 0.75, Resolution.height() * 0.75);;
 
         //END-------------------------------------------------
 
@@ -331,6 +334,20 @@ public class NumbersPuzzle extends Application {
             int col_OLD = emptySquareIndex % SelectionMenu.getGridSize();
 
             boolean fullscreen = false;
+
+            if (event.getCode() == KeyCode.H){
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Open Image File");
+                fileChooser.getExtensionFilters().addAll(
+                        new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg")
+                );
+
+                File selectedFile = fileChooser.showOpenDialog(mainStage);
+
+                if (selectedFile != null) {
+                    Image image = new Image(selectedFile.toURI().toString());
+                }
+            }
 
             if (event.getCode() == KeyCode.F11) { // FULLSCREEN
 

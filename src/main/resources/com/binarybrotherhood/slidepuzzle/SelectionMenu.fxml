@@ -171,5 +171,10 @@
             <Font name="Tw Cen MT Condensed Extra Bold" size="31.0" />
          </font>
       </Label>
+      <Button fx:id="selectImageButton" layoutX="123.0" layoutY="363.0" mnemonicParsing="false" onAction="#selectImage" text="Select New Image" visible="false">
+         <font>
+            <Font name="Tw Cen MT" size="13.0" />
+         </font>
+      </Button>
     </AnchorPane>
 </VBox>

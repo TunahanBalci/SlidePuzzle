@@ -6,6 +6,7 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.effect.BlendMode;
@@ -14,8 +15,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.io.File;
 
 public class SelectionMenuController {
 
@@ -74,6 +78,8 @@ public class SelectionMenuController {
     private Button slideLeftButton;
     @FXML
     private Button fullscreenButton;
+    @FXML
+    private Button selectImageButton;
 
 
     @FXML
@@ -85,6 +91,12 @@ public class SelectionMenuController {
 
         System.out.println("TEST");
 
+    }
+
+    @FXML
+    protected void selectImage() {
+
+        SelectionMenu.setIsSelectingImage(true);
     }
 
     @FXML
@@ -119,6 +131,8 @@ public class SelectionMenuController {
                 playImage_label2.setTextFill(Color.web("#213443"));
                 gameImage.setImage(new Image("/icon_4x4.png"));
                 puzzleName.setText("4X4 NUMBER PUZZLE");
+
+                selectImageButton.setVisible(false);
                 break;
             case 1:
                 SelectionMenu.gameModeIndex = 0;
@@ -127,6 +141,8 @@ public class SelectionMenuController {
                 playImage_label2.setTextFill(Color.web("#213443"));
                 gameImage.setImage( new Image("/icon_3x3.png"));
                 puzzleName.setText("3X3 NUMBER PUZZLE");
+
+                selectImageButton.setVisible(false);
                 break;
             case 0:
                 SelectionMenu.gameModeIndex = 2;
@@ -135,6 +151,8 @@ public class SelectionMenuController {
                 playImage_label2.setTextFill(Color.web("#ffffff"));
                 gameImage.setImage( new Image("/icon_3x3_picture.png"));
                 puzzleName.setText("3X3 PICTURE PUZZLE");
+
+                selectImageButton.setVisible(true);
                 break;
             default:
                 System.out.println("ERROR: COULDNT SELECT GAME MODE (GAMEMODE_PREVIOUS)");;
@@ -157,6 +175,8 @@ public class SelectionMenuController {
                 playImage_label2.setTextFill(Color.web("#213443"));
                 gameImage.setImage(new Image("/icon_4x4.png"));
                 puzzleName.setText("4X4 NUMBER PUZZLE");
+
+                selectImageButton.setVisible(false);
                 break;
             case 1:
                 SelectionMenu.gameModeIndex = 2;
@@ -165,6 +185,8 @@ public class SelectionMenuController {
                 playImage_label2.setTextFill(Color.web("#ffffff"));
                 gameImage.setImage( new Image("/icon_3x3_picture.png"));
                 puzzleName.setText("3X3 PICTURE PUZZLE");
+
+                selectImageButton.setVisible(true);
                 break;
             case 2:
                 SelectionMenu.gameModeIndex = 0;
@@ -173,6 +195,8 @@ public class SelectionMenuController {
                 playImage_label2.setTextFill(Color.web("#213443"));
                 gameImage.setImage( new Image("/icon_3x3.png"));
                 puzzleName.setText("3X3 NUMBER PUZZLE");
+
+                selectImageButton.setVisible(false);
                 break;
             default:
                 System.out.println("ERROR: COULDNT SELECT GAME MODE (GAMEMODE_NEXT)");;
@@ -362,6 +386,23 @@ public class SelectionMenuController {
 
                 playImage_label1.setTextFill(Color.web("#ffffff"));
                 puzzleName.setText("3X3 PICTURE PUZZLE");
+
+                Platform.runLater(()->{
+
+                    try {
+
+                        SelectionMenu.setGridSize(3);
+                        Application application = PicturePuzzle.class.newInstance();
+
+                        Stage newStage = new Stage();
+                        application.start(newStage);
+
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+                    }
+                });
+
                 break;
             default:
                 System.out.println("ERROR: IN CONTROLLER INITIALIZE METHOD (IMAGEVIEW SWITCH-CASE)");
@@ -582,6 +623,8 @@ public class SelectionMenuController {
                 gameImage.setImage(new Image("/icon_3x3_picture.png"));
 
                 playImage_label1.setTextFill(Color.web("#ffffff"));
+
+                selectImageButton.setVisible(true);
                 puzzleName.setText("3X3 PICTURE PUZZLE");
                 break;
             default:
