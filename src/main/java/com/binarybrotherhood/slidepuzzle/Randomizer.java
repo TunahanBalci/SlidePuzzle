@@ -1,16 +1,15 @@
 package com.binarybrotherhood.slidepuzzle;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Random;
 
 public class Randomizer {
 
-    public static ComparableElements [][] getRandomArray(int limit, String type){
+    public static ElementProperties[][] getRandomArray(int limit, String type){
 
         while (true){
 
-            ComparableElements[][] candidate = createRandomArray(limit, type);
+            ElementProperties[][] candidate = createRandomArray(limit, type);
 
             if (Checks.isSolvable(candidate)){
                 return candidate;
@@ -18,7 +17,7 @@ public class Randomizer {
         }
     }
 
-    private static ComparableElements[][] createRandomArray(int limit, String type){
+    private static ElementProperties[][] createRandomArray(int limit, String type){
 
         //START-------------------------------------------------
         // CREATE RANDOM OBJECT (FOR RANDOMIZED INDEX)
@@ -35,7 +34,7 @@ public class Randomizer {
         ArrayList<Integer> initialNumbers = new ArrayList<Integer>();
         ArrayList<Integer> randomizedNumbers = new ArrayList<Integer>();
 
-        ComparableElements [][] returnArray = new ComparableElements[limit][limit];
+        ElementProperties[][] returnArray = new ElementProperties[limit][limit];
 
         //END-------------------------------------------------
 
@@ -65,7 +64,7 @@ public class Randomizer {
                 randomizedNumbers.add(initialNumbers.get(randomIndex));
                 initialNumbers.remove(randomIndex);
 
-                returnArray[row][col] = new ComparableElements(randomizedNumbers.get(row * limit + col), type);
+                returnArray[row][col] = new ElementProperties(randomizedNumbers.get(row * limit + col), type);
             }
         }
 
@@ -76,7 +75,7 @@ public class Randomizer {
         //START-------------------------------------------------
         // FINALIZE THE ARRAY BY INITIALIZING ELEMENTS VIA CONSTRUCTOR
 
-        returnArray[limit - 1][limit - 1] = new ComparableElements((-1), type);
+        returnArray[limit - 1][limit - 1] = new ElementProperties((0), type);
 
         //END-------------------------------------------------
 

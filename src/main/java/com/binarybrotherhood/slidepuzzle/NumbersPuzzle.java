@@ -36,7 +36,7 @@ public class NumbersPuzzle extends Application {
 
         pane.setStyle(" -fx-background-image: url('background.jfif'); -fx-background-position: center center;");
 
-        Scene scene = new Scene(pane, Resolution.width() * 0.75, Resolution.height() * 0.75);;
+        Scene scene = new Scene(pane, Utilities.width() * 0.75, Utilities.height() * 0.75);;
 
         //END-------------------------------------------------
 
@@ -49,14 +49,14 @@ public class NumbersPuzzle extends Application {
 
         Label [][] numbers = new Label[SelectionMenu.getGridSize()][SelectionMenu.getGridSize()];
 
-        ComparableElements [][] twinArray = Randomizer.getRandomArray(SelectionMenu.getGridSize(), "Number");
+        ElementProperties[][] ghostArray = Randomizer.getRandomArray(SelectionMenu.getGridSize(), "Number");
 
         //END-------------------------------------------------
 
 
 
         //START-------------------------------------------------
-        // CREATE AND INITIALIZE RECTANGLESIZE VARIABLE (FOR CALCULATIONS)
+        // CREATE AND INITIALIZE RECTANGLE SIZE VARIABLE (FOR CALCULATIONS)
 
         double rectangleSize = (mainStage.getWidth() / 4.0) / SelectionMenu.getGridSize();
 
@@ -85,11 +85,11 @@ public class NumbersPuzzle extends Application {
 
                 // ADJUST RECTANGLE POSITIONS
 
-                backgroundCell[0][0].setTranslateX(Resolution.spacingWidth);
-                backgroundCell[0][0].setTranslateY(Resolution.spacingHeight());
+                backgroundCell[0][0].setTranslateX(Utilities.spacingWidth);
+                backgroundCell[0][0].setTranslateY(Utilities.spacingHeight());
 
-                backgroundCell[row][col].setTranslateX(Resolution.spacingWidth + (rectangleSize * col));
-                backgroundCell[row][col].setTranslateY(Resolution.spacingHeight() + (rectangleSize * row));
+                backgroundCell[row][col].setTranslateX(Utilities.spacingWidth + (rectangleSize * col));
+                backgroundCell[row][col].setTranslateY(Utilities.spacingHeight() + (rectangleSize * row));
 
 
 
@@ -98,7 +98,7 @@ public class NumbersPuzzle extends Application {
                 if (row == SelectionMenu.getGridSize() - 1 && col == SelectionMenu.getGridSize() - 1){
                     numbers[row][col] = new Label(" ");
                 } else {
-                    numbers[row][col] = new Label(String.valueOf(twinArray[row][col].index));
+                    numbers[row][col] = new Label(String.valueOf(ghostArray[row][col].index));
                 }
 
 
@@ -190,7 +190,7 @@ public class NumbersPuzzle extends Application {
 
                     // CHANGE POSITION OF RECTANGLES ACCORDING TO VERTICAL WINDOW SIZE
 
-                    backgroundCell[row][col].setTranslateY(((Resolution.spacingHeight() / Resolution.height()) * (double) newResolution) + (dynamicSize * row));
+                    backgroundCell[row][col].setTranslateY(((Utilities.spacingHeight() / Utilities.height()) * (double) newResolution) + (dynamicSize * row));
 
 
 
@@ -240,8 +240,8 @@ public class NumbersPuzzle extends Application {
 
                     // CHANGE POSITION OF RECTANGLES ACCORDING TO HORIZONTAL WINDOW SIZE AND RECTANGLE SIZE
 
-                    backgroundCell[row][col].setTranslateX((Resolution.spacingWidth / (Resolution.width() / (double) newResolution)) + (dynamicSize * col));
-                    backgroundCell[row][col].setTranslateY((Resolution.spacingHeight() / (Resolution.height() / mainStage.getHeight())) + (dynamicSize * row));
+                    backgroundCell[row][col].setTranslateX((Utilities.spacingWidth / (Utilities.width() / (double) newResolution)) + (dynamicSize * col));
+                    backgroundCell[row][col].setTranslateY((Utilities.spacingHeight() / (Utilities.height() / mainStage.getHeight())) + (dynamicSize * row));
 
 
 
@@ -279,8 +279,8 @@ public class NumbersPuzzle extends Application {
                     backgroundCell[row][col].setHeight(dynamicSize);
                     backgroundCell[row][col].setWidth(dynamicSize);
 
-                    backgroundCell[row][col].setTranslateX((Resolution.spacingWidth / (Resolution.width() / mainStage.getWidth())) + (dynamicSize * col));
-                    backgroundCell[row][col].setTranslateY((Resolution.spacingHeight() / (Resolution.height() / mainStage.getHeight())) + (dynamicSize * row));
+                    backgroundCell[row][col].setTranslateX((Utilities.spacingWidth / (Utilities.width() / mainStage.getWidth())) + (dynamicSize * col));
+                    backgroundCell[row][col].setTranslateY((Utilities.spacingHeight() / (Utilities.height() / mainStage.getHeight())) + (dynamicSize * row));
 
 
                     int temp = (int) Math.round(mainStage.getWidth() / 8.0 / (double) SelectionMenu.getGridSize());
@@ -319,7 +319,7 @@ public class NumbersPuzzle extends Application {
         for (int row = 0; row < SelectionMenu.getGridSize(); row++){
             for (int col = 0; col < SelectionMenu.getGridSize(); col++){
 
-                if (twinArray[row][col].index == -1){
+                if (ghostArray[row][col].index == 0){
                     emptySquareIndex = row * SelectionMenu.getGridSize() + col;
                 }
             }
@@ -367,10 +367,10 @@ public class NumbersPuzzle extends Application {
                     int row = (emptySquareIndex - (emptySquareIndex % SelectionMenu.getGridSize())) / SelectionMenu.getGridSize();
                     int col = emptySquareIndex % SelectionMenu.getGridSize();
 
-                    numbers[row_OLD][col_OLD].setText(String.valueOf(twinArray[row][col].index));
+                    numbers[row_OLD][col_OLD].setText(String.valueOf(ghostArray[row][col].index));
 
-                    twinArray[row_OLD][col_OLD].index = twinArray[row][col].index;
-                    twinArray[row][col].index = -1;
+                    ghostArray[row_OLD][col_OLD].index = ghostArray[row][col].index;
+                    ghostArray[row][col].index = 0;
 
                     numbers[row][col].setText(" ");
 
@@ -379,7 +379,7 @@ public class NumbersPuzzle extends Application {
                     numbers[row][col].setTranslateY(backgroundCell[row][col].getTranslateY() + backgroundCell[row][col].getHeight() / 2 - numbers[row][col].getHeight() / 2);
                 }
 
-                if (Checks.inCorrectOrder(twinArray)){
+                if (Checks.inCorrectOrder(ghostArray)){
 
                     System.out.println("CONGRATULATIONS!!!!");
                 }
@@ -396,10 +396,10 @@ public class NumbersPuzzle extends Application {
                     int row = (emptySquareIndex - (emptySquareIndex % SelectionMenu.getGridSize())) / SelectionMenu.getGridSize();
                     int col = emptySquareIndex % SelectionMenu.getGridSize();
 
-                    numbers[row_OLD][col_OLD].setText(String.valueOf(twinArray[row][col].index));
+                    numbers[row_OLD][col_OLD].setText(String.valueOf(ghostArray[row][col].index));
 
-                    twinArray[row_OLD][col_OLD].index = twinArray[row][col].index;
-                    twinArray[row][col].index = -1;
+                    ghostArray[row_OLD][col_OLD].index = ghostArray[row][col].index;
+                    ghostArray[row][col].index = 0;
 
                     numbers[row][col].setText(" ");
 
@@ -408,7 +408,7 @@ public class NumbersPuzzle extends Application {
                     numbers[row][col].setTranslateY(backgroundCell[row][col].getTranslateY() + backgroundCell[row][col].getHeight() / 2 - numbers[row][col].getHeight() / 2);
                 }
 
-                if (Checks.inCorrectOrder(twinArray)){
+                if (Checks.inCorrectOrder(ghostArray)){
 
                     System.out.println("CONGRATULATIONS!!!!");
                 }
@@ -424,10 +424,10 @@ public class NumbersPuzzle extends Application {
                     int row = (emptySquareIndex - (emptySquareIndex % SelectionMenu.getGridSize())) / SelectionMenu.getGridSize();
                     int col = emptySquareIndex % SelectionMenu.getGridSize();
 
-                    numbers[row_OLD][col_OLD].setText(String.valueOf(twinArray[row][col].index));
+                    numbers[row_OLD][col_OLD].setText(String.valueOf(ghostArray[row][col].index));
 
-                    twinArray[row_OLD][col_OLD].index = twinArray[row][col].index;
-                    twinArray[row][col].index = -1;
+                    ghostArray[row_OLD][col_OLD].index = ghostArray[row][col].index;
+                    ghostArray[row][col].index = 0;
 
                     numbers[row][col].setText(" ");
 
@@ -436,7 +436,7 @@ public class NumbersPuzzle extends Application {
                     numbers[row][col].setTranslateY(backgroundCell[row][col].getTranslateY() + backgroundCell[row][col].getHeight() / 2 - numbers[row][col].getHeight() / 2);
                 }
 
-                if (Checks.inCorrectOrder(twinArray)){
+                if (Checks.inCorrectOrder(ghostArray)){
 
                     System.out.println("CONGRATULATIONS!!!!");
                 }
@@ -450,10 +450,10 @@ public class NumbersPuzzle extends Application {
                     int row = (emptySquareIndex - (emptySquareIndex % SelectionMenu.getGridSize())) / SelectionMenu.getGridSize();
                     int col = emptySquareIndex % SelectionMenu.getGridSize();
 
-                    numbers[row_OLD][col_OLD].setText(String.valueOf(twinArray[row][col].index));
+                    numbers[row_OLD][col_OLD].setText(String.valueOf(ghostArray[row][col].index));
 
-                    twinArray[row_OLD][col_OLD].index = twinArray[row][col].index;
-                    twinArray[row][col].index = -1;
+                    ghostArray[row_OLD][col_OLD].index = ghostArray[row][col].index;
+                    ghostArray[row][col].index = 0;
 
                     numbers[row][col].setText(" ");
 
@@ -463,7 +463,7 @@ public class NumbersPuzzle extends Application {
                 }
 
 
-                if (Checks.inCorrectOrder(twinArray)){
+                if (Checks.inCorrectOrder(ghostArray)){
 
                     System.out.println("CONGRATULATIONS!!!!");
                 }
@@ -484,8 +484,8 @@ public class NumbersPuzzle extends Application {
         mainStage.setScene(scene);
         mainStage.show();
 
-        mainStage.setMinHeight((double) Resolution.height() / 2);
-        mainStage.setMinWidth((double) Resolution.width() / 2 );
+        mainStage.setMinHeight((double) Utilities.height() / 2);
+        mainStage.setMinWidth((double) Utilities.width() / 2 );
 
         mainStage.setMaximized(false); // BREAKS THE SCREEN SOMEHOW
 

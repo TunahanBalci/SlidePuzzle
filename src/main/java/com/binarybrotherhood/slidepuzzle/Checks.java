@@ -4,7 +4,6 @@ import javafx.scene.input.KeyCode;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Set;
 
 public class Checks {
 
@@ -14,9 +13,9 @@ public class Checks {
     // CHECK IF ALL OF THE INDEXES OF SELECTED ARRAY ALIGNS TO THE SPECIFIED ORDER
     // IN OUR CASE: 1 -> 2 -> 3 ... (8 or 15) FOR NUMBER PUZZLE
 
-    public static boolean inCorrectOrder(ComparableElements[][] input) {
+    public static boolean inCorrectOrder(ElementProperties[][] input) {
 
-        ArrayList<ComparableElements> linearArray = new ArrayList<>();
+        ArrayList<ElementProperties> linearArray = new ArrayList<>();
 
         for (int row = 0; row < SelectionMenu.getGridSize(); row++) {
             for (int col = 0; col < SelectionMenu.getGridSize(); col++) {
@@ -45,7 +44,7 @@ public class Checks {
     }
     //END-------------------------------------------------
 
-    public static boolean isSolvable(ComparableElements[][] candidate){
+    public static boolean isSolvable(ElementProperties[][] candidate){
 
         int [] linearArray = new int[SelectionMenu.getGridSize() * SelectionMenu.getGridSize() - 1];
 

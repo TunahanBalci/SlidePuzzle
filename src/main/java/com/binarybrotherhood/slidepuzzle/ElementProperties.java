@@ -1,6 +1,6 @@
 package com.binarybrotherhood.slidepuzzle;
 
-public class ComparableElements {
+public class ElementProperties {
 
     //START-------------------------------------------------
     // FOR THE INDEX (NUMERICAL VALUE) OF LABELS
@@ -27,7 +27,7 @@ public class ComparableElements {
 
     // CONSTRUCTOR (INITIALIZES TYPE AND INDEX)
 
-    public ComparableElements (int index, String type){
+    public ElementProperties(int index, String type){
 
         this.index = index;
         this.type = type;

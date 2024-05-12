@@ -1,8 +1,13 @@
 package com.binarybrotherhood.slidepuzzle;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritableImage;
+
 import java.awt.*;
 
-public class Resolution {
+public class Utilities {
 
     //START-------------------------------------------------
     // CREATE AND INITIALIZE GRAPHICSDEVICE AND GRAPHICSENVIRONMENT OBJECTS
@@ -115,4 +120,32 @@ public class Resolution {
 
 
 
+
+
+    public static ImageView[][] getImageCells(ImageView origin, ElementProperties[][] ghostArray){
+
+        ImageView[][] output = new ImageView[SelectionMenu.getGridSize()][SelectionMenu.getGridSize()];
+
+        PixelReader reader = PicturePuzzle.getImage().getPixelReader();
+        int cellWidth = (int) origin.getFitWidth() / SelectionMenu.getGridSize();
+        int cellHeight = (int) origin.getFitHeight() / SelectionMenu.getGridSize();
+
+        for(int row = 0; row < SelectionMenu.getGridSize(); row++){
+            for (int col = 0; col < SelectionMenu.getGridSize(); col++){
+
+                int r = (ghostArray[row][col].index - (ghostArray[row][col].index % SelectionMenu.getGridSize())) / SelectionMenu.getGridSize();
+                int c = ghostArray[row][col].index % SelectionMenu.getGridSize();
+
+                int x = c * cellWidth;
+                int y = r * cellHeight;
+
+
+                WritableImage writableImage = new WritableImage(reader, x, y, cellWidth, cellHeight);
+                output[row][col] = new ImageView(writableImage);
+            }
+        }
+
+        return output;
+
+    }
 }
