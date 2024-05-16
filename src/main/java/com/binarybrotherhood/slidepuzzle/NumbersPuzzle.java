@@ -1,5 +1,6 @@
 package com.binarybrotherhood.slidepuzzle;
 
+import com.sun.jdi.PrimitiveValue;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -491,6 +492,5 @@ public class NumbersPuzzle extends Application {
 
         //END-------------------------------------------------
     }
-
 
 }
