@@ -1,9 +1,7 @@
 package com.binarybrotherhood.slidepuzzle;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelReader;
-import javafx.scene.image.WritableImage;
+import javafx.scene.image.*;
+import javafx.scene.paint.Color;
 
 import java.awt.*;
 
@@ -147,5 +145,38 @@ public class Utilities {
 
         return output;
 
+    }
+
+    public static ImageView createPlaceholderImage(int size) {  //CHATGPT + MANUAL EDIT
+
+        WritableImage writableImage = new WritableImage(size, size);
+        PixelWriter pixelWriter = writableImage.getPixelWriter();
+
+        for (int y = 0; y < size; y++) {
+                for (int x = 0; x < size; x++) {
+
+                pixelWriter.setColor(x, y, Color.valueOf(("#ff0000")));
+            }
+        }
+
+        ImageView product = new ImageView(writableImage);
+        return product;
+    }
+
+    public static ImageView createCellBackground(int size) { // COPIED FROM createWhiteImage
+
+        WritableImage writableImage = new WritableImage(size, size);
+        PixelWriter pixelWriter = writableImage.getPixelWriter();
+
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+
+                pixelWriter.setColor(x, y, Color.valueOf(("#000000")));
+            }
+        }
+
+        ImageView product = new ImageView(writableImage);
+        product.setOpacity(0.5);
+        return product;
     }
 }

@@ -6,7 +6,6 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.effect.BlendMode;
@@ -15,11 +14,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import java.io.File;
 
 public class SelectionMenuController {
 
@@ -129,7 +125,16 @@ public class SelectionMenuController {
 
                 playImage_label1.setTextFill(Color.web("#213443"));
                 playImage_label2.setTextFill(Color.web("#213443"));
-                gameImage.setImage(new Image("/icon_4x4.png"));
+
+                try {
+                    gameImage.setImage(new Image("/icon_4x4.png"));
+                } catch (Exception e) {
+
+                    System.out.println("ERROR: Couldn't load 4x4 number puzzle icon: " + e.getMessage());
+
+                    gameImage.setImage(Utilities.createPlaceholderImage(128).getImage());
+                }
+
                 puzzleName.setText("4X4 NUMBER PUZZLE");
 
                 selectImageButton.setVisible(false);
@@ -139,7 +144,16 @@ public class SelectionMenuController {
 
                 playImage_label1.setTextFill(Color.web("#213443"));
                 playImage_label2.setTextFill(Color.web("#213443"));
-                gameImage.setImage( new Image("/icon_3x3.png"));
+
+                try {
+                    gameImage.setImage(new Image("/icon_3x3.png"));
+                } catch (Exception e) {
+
+                    System.out.println("ERROR: Couldn't load 3x3 number puzzle icon: " + e.getMessage());
+
+                    gameImage.setImage(Utilities.createPlaceholderImage(128).getImage());
+                }
+
                 puzzleName.setText("3X3 NUMBER PUZZLE");
 
                 selectImageButton.setVisible(false);
@@ -149,7 +163,16 @@ public class SelectionMenuController {
 
                 playImage_label1.setTextFill(Color.web("#ffffff"));
                 playImage_label2.setTextFill(Color.web("#ffffff"));
-                gameImage.setImage( new Image("/icon_3x3_picture.png"));
+
+                try {
+                    gameImage.setImage(new Image("/icon_3x3_picture.png"));
+                } catch (Exception e) {
+
+                    System.out.println("ERROR: Couldn't load 3x3 picture puzzle icon: " + e.getMessage());
+
+                    gameImage.setImage(Utilities.createPlaceholderImage(128).getImage());
+                }
+
                 puzzleName.setText("3X3 PICTURE PUZZLE");
 
                 selectImageButton.setVisible(true);
@@ -173,7 +196,16 @@ public class SelectionMenuController {
 
                 playImage_label1.setTextFill(Color.web("#213443"));
                 playImage_label2.setTextFill(Color.web("#213443"));
-                gameImage.setImage(new Image("/icon_4x4.png"));
+
+                try {
+                    gameImage.setImage(new Image("/icon_4x4.png"));
+                } catch (Exception e) {
+
+                    System.out.println("ERROR: Couldn't load 4x4 number puzzle icon: " + e.getMessage());
+
+                    gameImage.setImage(Utilities.createPlaceholderImage(128).getImage());
+                }
+
                 puzzleName.setText("4X4 NUMBER PUZZLE");
 
                 selectImageButton.setVisible(false);
@@ -183,7 +215,16 @@ public class SelectionMenuController {
 
                 playImage_label1.setTextFill(Color.web("#ffffff"));
                 playImage_label2.setTextFill(Color.web("#ffffff"));
-                gameImage.setImage( new Image("/icon_3x3_picture.png"));
+
+                try {
+                    gameImage.setImage(new Image("/icon_3x3_picture.png"));
+                } catch (Exception e) {
+
+                    System.out.println("ERROR: Couldn't load 3x3 picture puzzle icon: " + e.getMessage());
+
+                    gameImage.setImage(Utilities.createPlaceholderImage(128).getImage());
+                }
+
                 puzzleName.setText("3X3 PICTURE PUZZLE");
 
                 selectImageButton.setVisible(true);
@@ -193,7 +234,16 @@ public class SelectionMenuController {
 
                 playImage_label1.setTextFill(Color.web("#213443"));
                 playImage_label2.setTextFill(Color.web("#213443"));
-                gameImage.setImage( new Image("/icon_3x3.png"));
+
+                try {
+                    gameImage.setImage(new Image("/icon_3x3.png"));
+                } catch (Exception e) {
+
+                    System.out.println("ERROR: Couldn't load 3x3 number puzzle icon: " + e.getMessage());
+
+                    gameImage.setImage(Utilities.createPlaceholderImage(128).getImage());
+                }
+
                 puzzleName.setText("3X3 NUMBER PUZZLE");
 
                 selectImageButton.setVisible(false);
@@ -336,8 +386,16 @@ public class SelectionMenuController {
         switch(SelectionMenu.gameModeIndex) {
             case 0:
 
+                try {
 
-                gameImage.setImage(new Image("/icon_3x3.png"));
+                    gameImage.setImage(new Image("/icon_3x3.png"));
+                } catch (Exception e) {
+
+                    System.out.println("ERROR: Couldn't load 4x4 number puzzle icon: " + e.getMessage());
+
+                    gameImage.setImage(Utilities.createPlaceholderImage(128).getImage());
+                }
+
                 puzzleName.setText("3X3 NUMBER PUZZLE");
 
                 Platform.runLater(()->{
@@ -376,13 +434,30 @@ public class SelectionMenuController {
                     }
                 });
 
-                gameImage.setImage(new Image("/icon_4x4.png"));
+                try {
+
+                    gameImage.setImage(new Image("/icon_4x4.png"));
+                } catch (Exception e) {
+
+                    System.out.println("ERROR: Couldn't load 4x4 number puzzle icon: " + e.getMessage());
+
+                    gameImage.setImage(Utilities.createPlaceholderImage(128).getImage());
+                }
+
                 puzzleName.setText("4X4 NUMBER PUZZLE");
                 break;
 
             case 2:
 
-                gameImage.setImage(new Image("/icon_3x3_picture.png"));
+                try {
+
+                    gameImage.setImage(new Image("/icon_3x3_picture.png"));
+                } catch (Exception e) {
+
+                    System.out.println("ERROR: Couldn't load 3x3 picture puzzle icon: " + e.getMessage());
+
+                    gameImage.setImage(Utilities.createPlaceholderImage(128).getImage());
+                }
 
                 playImage_label1.setTextFill(Color.web("#ffffff"));
                 puzzleName.setText("3X3 PICTURE PUZZLE");
@@ -607,20 +682,45 @@ public class SelectionMenuController {
         switch(SelectionMenu.gameModeIndex) {
             case 0:
 
+                try {
 
-                gameImage.setImage(new Image("/icon_3x3.png"));
+                    gameImage.setImage(new Image("/icon_3x3.png"));
+                } catch (Exception e) {
+
+                    System.out.println("ERROR: Couldn't load 3x3 number puzzle icon: " + e.getMessage());
+
+                    gameImage.setImage(Utilities.createPlaceholderImage(128).getImage());
+                }
+
                 puzzleName.setText("3X3 NUMBER PUZZLE");
                 break;
 
             case 1:
 
-                gameImage.setImage(new Image("/icon_4x4.png"));
+                try {
+
+                    gameImage.setImage(new Image("/icon_4x4.png"));
+                } catch (Exception e) {
+
+                    System.out.println("ERROR: Couldn't load 4x4 number puzzle icon: " + e.getMessage());
+
+                    gameImage.setImage(Utilities.createPlaceholderImage(128).getImage());
+                }
+
                 puzzleName.setText("4X4 NUMBER PUZZLE");
                 break;
 
             case 2:
 
-                gameImage.setImage(new Image("/icon_3x3_picture.png"));
+                try {
+
+                    gameImage.setImage(new Image("/icon_3x3_picture.png"));
+                } catch (Exception e) {
+
+                    System.out.println("ERROR: Couldn't load 3x3 picture puzzle icon: " + e.getMessage());
+
+                    gameImage.setImage(Utilities.createPlaceholderImage(128).getImage());
+                }
 
                 playImage_label1.setTextFill(Color.web("#ffffff"));
 

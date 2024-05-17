@@ -1,6 +1,5 @@
 package com.binarybrotherhood.slidepuzzle;
 
-import com.sun.jdi.PrimitiveValue;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -10,6 +9,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
@@ -28,14 +28,28 @@ public class NumbersPuzzle extends Application {
     public static int emptySquareIndex = 0;
 
     @Override
-    public void start(Stage mainStage) {
+    public void start(Stage stage) {
 
         //START-------------------------------------------------
         // CREATE PANE AND SCENE + ADJUST BACKGROUND
 
         Pane pane = new Pane();
 
-        pane.setStyle(" -fx-background-image: url('background.jfif'); -fx-background-position: center center;");
+        ImageView background;
+
+        try {
+
+            background = new ImageView(new Image(PicturePuzzle.class.getResourceAsStream("/background.png")));
+
+        } catch (Exception e) {
+
+            background = Utilities.createPlaceholderImage((int) stage.getWidth());
+        }
+
+        background.setPreserveRatio(false);
+        background.fitWidthProperty().bind(pane.widthProperty());
+        background.fitHeightProperty().bind(pane.heightProperty());
+        pane.getChildren().add(background);
 
         Scene scene = new Scene(pane, Utilities.width() * 0.75, Utilities.height() * 0.75);;
 
@@ -59,7 +73,7 @@ public class NumbersPuzzle extends Application {
         //START-------------------------------------------------
         // CREATE AND INITIALIZE RECTANGLE SIZE VARIABLE (FOR CALCULATIONS)
 
-        double rectangleSize = (mainStage.getWidth() / 4.0) / SelectionMenu.getGridSize();
+        double rectangleSize = (stage.getWidth() / 4.0) / SelectionMenu.getGridSize();
 
         //END-------------------------------------------------
 
@@ -114,7 +128,7 @@ public class NumbersPuzzle extends Application {
 
                 // ASSIGN INITIAL FONT TO NUMBER LABELS
 
-                int temp = (int) Math.round(mainStage.getWidth() / 8.0 / (double) SelectionMenu.getGridSize());
+                int temp = (int) Math.round(stage.getWidth() / 8.0 / (double) SelectionMenu.getGridSize());
 
                 numbers[row][col].setStyle(" -fx-text-fill:#2c2180; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + temp + ";");
 
@@ -141,7 +155,7 @@ public class NumbersPuzzle extends Application {
         Label header = new Label(SelectionMenu.getGridSize() + "x" + SelectionMenu.getGridSize() + " SLIDING PUZZLE");
         Font customFont = Font.loadFont(getClass().getResourceAsStream("/fonts/MightySouly.TTF"), 60);
         header.setFont(customFont);
-        header.setTextFill(Color.web("#3ebfde"));
+        header.setTextFill(Color.web("#2d7aba"));
 
         header.setEffect(ds);
 
@@ -164,7 +178,7 @@ public class NumbersPuzzle extends Application {
                 numbers[row][col].setTranslateX(backgroundCell[row][col].getTranslateX() + backgroundCell[row][col].getWidth() / 2 - numbers[row][col].getWidth() / 2);
                 numbers[row][col].setTranslateY(backgroundCell[row][col].getTranslateY() + backgroundCell[row][col].getHeight() / 2 - numbers[row][col].getHeight() / 2);
 
-                int temp = (int) Math.round(mainStage.getWidth() / 8.0 / (double) SelectionMenu.getGridSize());
+                int temp = (int) Math.round(stage.getWidth() / 8.0 / (double) SelectionMenu.getGridSize());
 
                 numbers[row][col].setStyle(" -fx-text-fill:#2c2180; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + temp + ";");
             }}
@@ -176,11 +190,11 @@ public class NumbersPuzzle extends Application {
         //START-------------------------------------------------
         // EXPERIMENTAL: DYNAMIC RESIZING (FOR HEIGT)
 
-        mainStage.heightProperty().addListener((observableValue, oldResolution, newResolution) -> {
+        stage.heightProperty().addListener((observableValue, oldResolution, newResolution) -> {
 
             // CREATE AND INITIALIZE DYNAMICSIZE VARIABLE (FOR DYNAMIC RECTANGLE SIZE)
 
-            double dynamicSize = ((mainStage.getWidth() / 4) / SelectionMenu.getGridSize());
+            double dynamicSize = ((stage.getWidth() / 4) / SelectionMenu.getGridSize());
 
 
 
@@ -197,7 +211,7 @@ public class NumbersPuzzle extends Application {
 
                     // CHANGE FONT SIZE OF NUMBER LABELS ACCORDING TO HORIZONTAL WINDOW SIZE
 
-                    int temp = (int) Math.round(mainStage.getWidth() / 8.0 / (double) SelectionMenu.getGridSize());
+                    int temp = (int) Math.round(stage.getWidth() / 8.0 / (double) SelectionMenu.getGridSize());
 
                     numbers[row][col].setStyle(" -fx-text-fill:#2c2180; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + temp + ";");
 
@@ -219,7 +233,7 @@ public class NumbersPuzzle extends Application {
         //START-------------------------------------------------
         // EXPERIMENTAL: DYNAMIC RESIZING (FOR WIDTH)
 
-        mainStage.widthProperty().addListener((observableValue, oldResolution, newResolution) -> {
+        stage.widthProperty().addListener((observableValue, oldResolution, newResolution) -> {
 
             // CREATE AND INITIALIZE DYNAMICSIZE VARIABLE (FOR DYNAMIC RECTANGLE SIZE)
 
@@ -242,7 +256,7 @@ public class NumbersPuzzle extends Application {
                     // CHANGE POSITION OF RECTANGLES ACCORDING TO HORIZONTAL WINDOW SIZE AND RECTANGLE SIZE
 
                     backgroundCell[row][col].setTranslateX((Utilities.spacingWidth / (Utilities.width() / (double) newResolution)) + (dynamicSize * col));
-                    backgroundCell[row][col].setTranslateY((Utilities.spacingHeight() / (Utilities.height() / mainStage.getHeight())) + (dynamicSize * row));
+                    backgroundCell[row][col].setTranslateY((Utilities.spacingHeight() / (Utilities.height() / stage.getHeight())) + (dynamicSize * row));
 
 
 
@@ -272,7 +286,7 @@ public class NumbersPuzzle extends Application {
 
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.1), event -> {
 
-            double dynamicSize = (mainStage.getWidth() / 4) / SelectionMenu.getGridSize();
+            double dynamicSize = (stage.getWidth() / 4) / SelectionMenu.getGridSize();
 
             for (int row = 0; row < SelectionMenu.getGridSize(); row++){
                 for (int col = 0; col < SelectionMenu.getGridSize(); col++){
@@ -280,11 +294,11 @@ public class NumbersPuzzle extends Application {
                     backgroundCell[row][col].setHeight(dynamicSize);
                     backgroundCell[row][col].setWidth(dynamicSize);
 
-                    backgroundCell[row][col].setTranslateX((Utilities.spacingWidth / (Utilities.width() / mainStage.getWidth())) + (dynamicSize * col));
-                    backgroundCell[row][col].setTranslateY((Utilities.spacingHeight() / (Utilities.height() / mainStage.getHeight())) + (dynamicSize * row));
+                    backgroundCell[row][col].setTranslateX((Utilities.spacingWidth / (Utilities.width() / stage.getWidth())) + (dynamicSize * col));
+                    backgroundCell[row][col].setTranslateY((Utilities.spacingHeight() / (Utilities.height() / stage.getHeight())) + (dynamicSize * row));
 
 
-                    int temp = (int) Math.round(mainStage.getWidth() / 8.0 / (double) SelectionMenu.getGridSize());
+                    int temp = (int) Math.round(stage.getWidth() / 8.0 / (double) SelectionMenu.getGridSize());
 
                     numbers[row][col].setStyle(" -fx-text-fill:#2c2180; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + temp + ";");
 
@@ -305,7 +319,7 @@ public class NumbersPuzzle extends Application {
 
         //START-------------------------------------------------
         // LISTENS FOR MAXIMIZED STAGE (TO ALIGN SCENE ELEMENTS)
-        mainStage.maximizedProperty().addListener(new ChangeListener<Boolean>() {
+        stage.maximizedProperty().addListener(new ChangeListener<Boolean>() {
 
             @Override
             public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
@@ -343,7 +357,7 @@ public class NumbersPuzzle extends Application {
                         new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg")
                 );
 
-                File selectedFile = fileChooser.showOpenDialog(mainStage);
+                File selectedFile = fileChooser.showOpenDialog(stage);
 
                 if (selectedFile != null) {
                     Image image = new Image(selectedFile.toURI().toString());
@@ -354,7 +368,7 @@ public class NumbersPuzzle extends Application {
 
                 fullscreen = !fullscreen;
 
-                mainStage.setFullScreen(fullscreen);
+                stage.setFullScreen(fullscreen);
             }
 
             else if (event.getCode() == KeyCode.DOWN){ // SWIPE UP
@@ -480,15 +494,24 @@ public class NumbersPuzzle extends Application {
         //START-------------------------------------------------
         // ADJUST AND SET THE STAGE
 
-        mainStage.getIcons().add(new Image("/icon.png")); //APP ICON
-        mainStage.setTitle("Slide Puzzle"); // APP TITLE
-        mainStage.setScene(scene);
-        mainStage.show();
+        try {
 
-        mainStage.setMinHeight((double) Utilities.height() / 2);
-        mainStage.setMinWidth((double) Utilities.width() / 2 );
+            stage.getIcons().add(new Image("/icon.png")); //APP ICON
+        } catch (Exception e) {
 
-        mainStage.setMaximized(false); // BREAKS THE SCREEN SOMEHOW
+            System.out.println("ERROR: Couldn't load icon: " + e.getMessage());
+
+            stage.getIcons().add(Utilities.createPlaceholderImage(128).getImage());
+        }
+
+        stage.setTitle("Slide Puzzle"); // APP TITLE
+        stage.setScene(scene);
+        stage.show();
+
+        stage.setMinHeight((double) Utilities.height() / 2);
+        stage.setMinWidth((double) Utilities.width() / 2 );
+
+        stage.setMaximized(false); // BREAKS THE SCREEN SOMEHOW
 
         //END-------------------------------------------------
     }

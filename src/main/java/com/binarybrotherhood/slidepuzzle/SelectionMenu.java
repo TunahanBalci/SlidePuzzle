@@ -7,8 +7,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
@@ -73,12 +71,25 @@ public class SelectionMenu extends Application {
                 if (selectedFile != null) {
                     Image inputImage = new Image(selectedFile.toURI().toString());
 
-                    PicturePuzzle.assignImage(inputImage);
+
+                    File file = new File("src/main/resources/latest_image.png");
+                    if (!file.exists()){
+
+
+                        System.out.println("ERROR: Latest Image could not be found. Creating new image file");
+                        Utilities.createPlaceholderImage(400);
+                        PicturePuzzle.assignImage(inputImage);
+
+                    } else {
+
+                        PicturePuzzle.assignImage(inputImage);
+                    }
                 }
 
                 isSelectingImage = false;
             }
         }));
+
 
         selectFileListener.setCycleCount(Timeline.INDEFINITE);
         selectFileListener.play();

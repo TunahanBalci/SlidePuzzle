@@ -7,8 +7,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
@@ -18,20 +17,43 @@ import javafx.stage.Stage;
 import javafx.scene.control.Label;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+import javafx.embed.swing.SwingFXUtils;
 
-import java.io.File;
+import javax.imageio.ImageIO;
+import java.io.*;
 
 public class PicturePuzzle extends Application {
 
-    public static int emptySquareIndex = 0;
+    private static boolean canPress = true;
 
-    private static Image inputImage = new Image("file:path/to/your/image.jpg");
+    private static int emptySquareIndex = 0;
+    private static int emptySquareRow = 0;
+    private static int emptySquareCol = 0;
+
+    private static Image inputImage = new Image(PicturePuzzle.class.getResourceAsStream("/latest_image.png"));
 
     public static void assignImage(Image input){
+
         inputImage = input;
+
+        String format = "png";
+        File file = new File("src/main/resources/latest_image." + format);
+
+
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(input, null), format, file);
+
+            System.out.println("Image saved successfully");
+        } catch (IOException e) {
+
+            System.out.println("Couldn't save image: " + e.getMessage());
+        }
+
+
     }
 
     public static Image getImage(){
+
         return inputImage;
     }
 
@@ -44,15 +66,30 @@ public class PicturePuzzle extends Application {
 
         Pane pane = new Pane();
 
-        pane.setStyle(" -fx-background-image: url('background.jfif'); -fx-background-position: center center;");
+        ImageView background;
+
+        try {
+
+            background = new ImageView(new Image(PicturePuzzle.class.getResourceAsStream("/background.png")));
+
+        } catch (Exception e) {
+
+            background = Utilities.createPlaceholderImage((int) stage.getWidth());
+        }
+
+        background.setPreserveRatio(false);
+        background.fitWidthProperty().bind(pane.widthProperty());
+        background.fitHeightProperty().bind(pane.heightProperty());
+        pane.getChildren().add(background);
 
         Scene scene = new Scene(pane, Utilities.width() * 0.75, Utilities.height() * 0.75);;
 
+
         ImageView mainImage = new ImageView(inputImage);
 
-        mainImage.setPreserveRatio(false);
-        mainImage.setFitWidth(400);
-        mainImage.setFitHeight(400);
+
+        mainImage.setFitWidth(smallestDimension(getImage()));
+        mainImage.setFitHeight(smallestDimension(getImage()));
 
         //END-------------------------------------------------
 
@@ -80,6 +117,11 @@ public class PicturePuzzle extends Application {
         //START-------------------------------------------------
         // ADJUST, ADD AND ALIGN RECTANGLES AND ADD NUMBERS
 
+        ImageView cellBackground = Utilities.createCellBackground(400);
+        cellBackground.setFitWidth(getSize(stage) * SelectionMenu.getGridSize() + getSize(stage) * 0.2);
+        cellBackground.setFitHeight(getSize(stage) * SelectionMenu.getGridSize() + getSize(stage) * 0.2);
+        pane.getChildren().add(cellBackground);
+
         for (int row = 0; row < SelectionMenu.getGridSize(); row++) {
             for (int col = 0; col < SelectionMenu.getGridSize(); col++) {
 
@@ -99,43 +141,28 @@ public class PicturePuzzle extends Application {
                 imageCell[row][col].setFitWidth(getSize(stage));
                 imageCell[row][col].setFitHeight(getSize(stage));
 
-                // CREATE RECTANGLES
-
-
-
-                // ADJUST RECTANGLE PROPERTIES
-
-
-
-                // ADJUST RECTANGLE POSITIONS
-
                 imageCell[0][0].setTranslateX(Utilities.spacingWidth);
                 imageCell[0][0].setTranslateY(Utilities.spacingHeight());
 
                 imageCell[row][col].setTranslateX(Utilities.spacingWidth + (spacing * col));
                 imageCell[row][col].setTranslateY(Utilities.spacingHeight() + (spacing * row));
 
+                if(ghostArray[row][col].index == 0){
+                    imageCell[row][col].setImage(null);
+                }
 
                 pane.getChildren().add(imageCell[row][col]);
             }
         }
 
-        //END-------------------------------------------------
 
+        Label header = new Label(SelectionMenu.getGridSize() + "x" + SelectionMenu.getGridSize() + " SLIDING PUZZLE");
+        header.setStyle(" -fx-text-fill:#9fd5c1; -fx-font-family: 'Papyrus'; -fx-font-size: " + 60 + ";");
 
-
-        //START-------------------------------------------------
-        // CREATE, ADD AND ADJUST HEADER
 
         DropShadow ds = new DropShadow(); //CSS EFFECT (DROPSHADOW)
         ds.setOffsetY(3.0f);
-        ds.setColor(Color.web("#0d2e36"));
-
-        Label header = new Label(SelectionMenu.getGridSize() + "x" + SelectionMenu.getGridSize() + " SLIDING PUZZLE");
-        Font customFont = Font.loadFont(getClass().getResourceAsStream("/fonts/MightySouly.TTF"), 60);
-        header.setFont(customFont);
-        header.setTextFill(Color.web("#3ebfde"));
-
+        ds.setColor(Color.web("#000000"));
         header.setEffect(ds);
 
         pane.getChildren().add(header);
@@ -143,19 +170,7 @@ public class PicturePuzzle extends Application {
         header.layoutXProperty().bind(pane.widthProperty().subtract(header.widthProperty()).divide(2));
         header.layoutYProperty().bind(pane.heightProperty().subtract(header.widthProperty()).divide(5));
 
-        //END-------------------------------------------------
 
-
-
-        //START-------------------------------------------------
-
-
-        //END-------------------------------------------------
-
-
-
-        //START-------------------------------------------------
-        // EXPERIMENTAL: DYNAMIC RESIZING (FOR HEIGT)
 
         stage.heightProperty().addListener((observableValue, oldResolution, newResolution) -> {
 
@@ -168,37 +183,35 @@ public class PicturePuzzle extends Application {
 
                     imageCell[row][col].setTranslateY(((Utilities.spacingHeight() / Utilities.height()) * (double) newResolution) + (getSize(stage) * row));
 
+                    cellBackground.setTranslateX(imageCell[0][0].getTranslateX() - getSize(stage) * 0.1);
+                    cellBackground.setTranslateY(imageCell[0][0].getTranslateY() - getSize(stage) * 0.1);
 
                 }
             }
         });
 
-        //END-------------------------------------------------
 
-
-
-        //START-------------------------------------------------
-        // EXPERIMENTAL: DYNAMIC RESIZING (FOR WIDTH)
 
         stage.widthProperty().addListener((observableValue, oldResolution, newResolution) -> {
 
-            // CREATE AND INITIALIZE DYNAMICSIZE VARIABLE (FOR DYNAMIC RECTANGLE SIZE)
 
-
-
-            // APPLY SPECIFIED TASKS TO ALL ARRAY ELEMENTS:
 
             for (int row = 0; row < SelectionMenu.getGridSize(); row++){
                 for (int col = 0; col < SelectionMenu.getGridSize(); col++){
 
-                    // CHANGE THE SIZE OF RECTANGLES ACCORDING TO HORIZONTAL WINDOW SIZE
+
 
                     imageCell[row][col].setFitHeight(getSize(stage));
                     imageCell[row][col].setFitWidth(getSize(stage));
 
+                    cellBackground.setFitWidth(getSize(stage) * SelectionMenu.getGridSize() + getSize(stage) * 0.2);
+                    cellBackground.setFitHeight(getSize(stage) * SelectionMenu.getGridSize() + getSize(stage) * 0.2);
+
+                    cellBackground.setTranslateX(imageCell[0][0].getTranslateX() - getSize(stage) * 0.1);
+                    cellBackground.setTranslateY(imageCell[0][0].getTranslateY() - getSize(stage) * 0.1);
 
 
-                    // CHANGE POSITION OF RECTANGLES ACCORDING TO HORIZONTAL WINDOW SIZE AND RECTANGLE SIZE
+
 
                     imageCell[row][col].setTranslateX((Utilities.spacingWidth / (Utilities.width() / (double) newResolution)) + (getSize(stage) * col));
                     imageCell[row][col].setTranslateY((Utilities.spacingHeight() / (Utilities.height() / stage.getHeight())) + (getSize(stage) * row));
@@ -206,13 +219,6 @@ public class PicturePuzzle extends Application {
                 }
             }
         });
-
-        //END-------------------------------------------------
-
-
-
-        //START-------------------------------------------------
-        // TIMED EVENTS (FOR FIXING INITIAL LABEL POSITIONS, FOR NOW)
 
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.1), event -> {
 
@@ -229,15 +235,12 @@ public class PicturePuzzle extends Application {
             }
         }));
 
+
+
         timeline.setCycleCount(20);
         timeline.play();
 
-        //END-------------------------------------------------
 
-
-
-        //START-------------------------------------------------
-        // LISTENS FOR MAXIMIZED STAGE (TO ALIGN SCENE ELEMENTS)
         stage.maximizedProperty().addListener(new ChangeListener<Boolean>() {
 
             @Override
@@ -246,8 +249,6 @@ public class PicturePuzzle extends Application {
                 timeline.play();
             }
         });
-
-        //END-------------------------------------------------
 
 
         for (int row = 0; row < SelectionMenu.getGridSize(); row++){
@@ -258,30 +259,15 @@ public class PicturePuzzle extends Application {
                 }
             }
         }
+        emptySquareCol = emptySquareIndex % SelectionMenu.getGridSize();
+        emptySquareRow = (emptySquareIndex - emptySquareCol) / SelectionMenu.getGridSize();
 
-        //START-------------------------------------------------
-        // LISTENS FOR KEYSTROKES
 
         scene.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
 
-            int row_OLD = (emptySquareIndex - (emptySquareIndex % SelectionMenu.getGridSize())) / SelectionMenu.getGridSize();
-            int col_OLD = emptySquareIndex % SelectionMenu.getGridSize();
 
             boolean fullscreen = false;
 
-            if (event.getCode() == KeyCode.H){
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Open Image File");
-                fileChooser.getExtensionFilters().addAll(
-                        new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg")
-                );
-
-                File selectedFile = fileChooser.showOpenDialog(stage);
-
-                if (selectedFile != null) {
-                    Image image = new Image(selectedFile.toURI().toString());
-                }
-            }
 
             if (event.getCode() == KeyCode.F11) { // FULLSCREEN
 
@@ -290,13 +276,51 @@ public class PicturePuzzle extends Application {
                 stage.setFullScreen(fullscreen);
             }
 
-            else if (event.getCode() == KeyCode.DOWN){ // SWIPE UP
+            else if (event.getCode() == KeyCode.DOWN && canPress){ // SWIPE UP
 
-                System.out.println(emptySquareIndex);
+                if (SelectionMenu.animations){
 
-                if(row_OLD > 0){
-;
+                    Timeline switchAnimation_DOWN = new Timeline(new KeyFrame(Duration.millis(10), e -> {
+
+                        canPress = false;
+
+                        imageCell[emptySquareRow - 1][emptySquareCol].setTranslateY(imageCell[emptySquareRow - 1][emptySquareCol].getTranslateY() + (getSize(stage) / 20.0));
+                    }));
+
+                    switchAnimation_DOWN.setCycleCount(20);
+                    switchAnimation_DOWN.setOnFinished(e -> {
+
+                        canPress = true;
+
+                        imageCell[emptySquareRow - 1][emptySquareCol].setTranslateY(imageCell[emptySquareRow - 1][emptySquareCol].getTranslateY() - (getSize(stage)));
+
+                        imageCell[emptySquareRow][emptySquareCol].setImage(imageCell[emptySquareRow - 1][emptySquareCol].getImage());
+                        imageCell[emptySquareRow - 1][emptySquareCol].setImage(null);
+
+                        ghostArray[emptySquareRow][emptySquareCol].index = ghostArray[emptySquareRow - 1][emptySquareCol].index;
+                        ghostArray[emptySquareRow - 1][emptySquareCol].index = 0;
+
+                        setRow(emptySquareRow - 1);
+
+                    });
+
+                    switchAnimation_DOWN.play();
+                } else {
+
+                    if (emptySquareRow > 0){
+
+                        imageCell[emptySquareRow][emptySquareCol].setImage(imageCell[emptySquareRow - 1][emptySquareCol].getImage());
+                        imageCell[emptySquareRow - 1][emptySquareCol].setImage(null);
+
+                        ghostArray[emptySquareRow][emptySquareCol].index = ghostArray[emptySquareRow - 1][emptySquareCol].index;
+                        ghostArray[emptySquareRow - 1][emptySquareCol].index = 0;
+
+                        setRow(emptySquareRow - 1);
+                    }
                 }
+
+
+
 
                 if (Checks.inCorrectOrder(ghostArray)){
 
@@ -306,10 +330,48 @@ public class PicturePuzzle extends Application {
 
             }
 
-            else if (event.getCode() == KeyCode.UP){ // SWIPE DOWN
+            else if (event.getCode() == KeyCode.UP && canPress){ // SWIPE DOWN
 
-                if(row_OLD < SelectionMenu.getGridSize() - 1){
+                if (SelectionMenu.animations){
 
+                    Timeline switchAnimation_UP = new Timeline(new KeyFrame(Duration.millis(10), e -> {
+
+                        canPress = false;
+
+                        imageCell[emptySquareRow + 1][emptySquareCol].setTranslateY(imageCell[emptySquareRow + 1][emptySquareCol].getTranslateY() - (getSize(stage) / 20.0));
+                    }));
+
+                    switchAnimation_UP.setCycleCount(20);
+                    switchAnimation_UP.setOnFinished(e -> {
+
+                        canPress = true;
+
+                        imageCell[emptySquareRow + 1][emptySquareCol].setTranslateY(imageCell[emptySquareRow + 1][emptySquareCol].getTranslateY() + (getSize(stage)));
+
+                        imageCell[emptySquareRow][emptySquareCol].setImage(imageCell[emptySquareRow + 1][emptySquareCol].getImage());
+                        imageCell[emptySquareRow + 1][emptySquareCol].setImage(null);
+
+                        ghostArray[emptySquareRow][emptySquareCol].index = ghostArray[emptySquareRow + 1][emptySquareCol].index;
+                        ghostArray[emptySquareRow + 1][emptySquareCol].index = 0;
+
+                        setRow(emptySquareRow + 1);
+                    });
+
+                    switchAnimation_UP.play();
+
+
+                } else {
+
+                    if (emptySquareRow < SelectionMenu.getGridSize() - 1){
+
+                        imageCell[emptySquareRow][emptySquareCol].setImage(imageCell[emptySquareRow + 1][emptySquareCol].getImage());
+                        imageCell[emptySquareRow + 1][emptySquareCol].setImage(null);
+
+                        ghostArray[emptySquareRow][emptySquareCol].index = ghostArray[emptySquareRow + 1][emptySquareCol].index;
+                        ghostArray[emptySquareRow + 1][emptySquareCol].index = 0;
+
+                        setRow(emptySquareRow + 1);
+                    }
                 }
 
                 if (Checks.inCorrectOrder(ghostArray)){
@@ -319,11 +381,47 @@ public class PicturePuzzle extends Application {
 
             }
 
-            else if (event.getCode() == KeyCode.RIGHT){ // SWIPE RIGHT
+            else if (event.getCode() == KeyCode.RIGHT && canPress){ // SWIPE RIGHT
 
-                System.out.println(emptySquareIndex);
-                if (col_OLD > 0){
+                if (SelectionMenu.animations){
 
+                    Timeline switchAnimation_RIGHT= new Timeline(new KeyFrame(Duration.millis(10), e -> {
+
+                        canPress = false;
+
+                        imageCell[emptySquareRow][emptySquareCol - 1].setTranslateX(imageCell[emptySquareRow][emptySquareCol - 1].getTranslateX() + (getSize(stage) / 20.0));
+                    }));
+
+                    switchAnimation_RIGHT.setCycleCount(20);
+                    switchAnimation_RIGHT.setOnFinished(e -> {
+
+                        canPress = true;
+
+                        imageCell[emptySquareRow][emptySquareCol - 1].setTranslateX(imageCell[emptySquareRow][emptySquareCol - 1].getTranslateX() - (getSize(stage)));
+
+                        imageCell[emptySquareRow][emptySquareCol].setImage(imageCell[emptySquareRow][emptySquareCol - 1].getImage());
+                        imageCell[emptySquareRow][emptySquareCol - 1].setImage(null);
+
+                        ghostArray[emptySquareRow][emptySquareCol].index = ghostArray[emptySquareRow][emptySquareCol - 1].index;
+                        ghostArray[emptySquareRow][emptySquareCol - 1].index = 0;
+
+                        setCol(emptySquareCol - 1);
+                    });
+
+                    switchAnimation_RIGHT.play();
+
+                } else {
+
+                    if (emptySquareCol > 0){
+
+                        imageCell[emptySquareRow][emptySquareCol].setImage(imageCell[emptySquareRow][emptySquareCol - 1].getImage());
+                        imageCell[emptySquareRow][emptySquareCol - 1].setImage(null);
+
+                        ghostArray[emptySquareRow][emptySquareCol].index = ghostArray[emptySquareRow][emptySquareCol - 1].index;
+                        ghostArray[emptySquareRow][emptySquareCol - 1].index = 0;
+
+                        setCol(emptySquareCol - 1);
+                    }
                 }
 
                 if (Checks.inCorrectOrder(ghostArray)){
@@ -332,12 +430,48 @@ public class PicturePuzzle extends Application {
                 }
             }
 
-            else if (event.getCode() == KeyCode.LEFT){ // SWIPE LEFT
+            else if (event.getCode() == KeyCode.LEFT && canPress){ // SWIPE LEFT
 
-                if (col_OLD < SelectionMenu.getGridSize() - 1){
+                if (SelectionMenu.animations){
 
+                    Timeline switchAnimation_LEFT = new Timeline(new KeyFrame(Duration.millis(10), e -> {
+
+                        canPress = false;
+
+                        imageCell[emptySquareRow][emptySquareCol + 1].setTranslateX(imageCell[emptySquareRow][emptySquareCol + 1].getTranslateX() - (getSize(stage) / 20.0));
+                    }));
+
+                    switchAnimation_LEFT.setCycleCount(20);
+                    switchAnimation_LEFT.setOnFinished(e -> {
+
+                        canPress = true;
+
+                        imageCell[emptySquareRow][emptySquareCol + 1].setTranslateX(imageCell[emptySquareRow][emptySquareCol + 1].getTranslateX() + (getSize(stage)));
+
+                        imageCell[emptySquareRow][emptySquareCol].setImage(imageCell[emptySquareRow][emptySquareCol + 1].getImage());
+                        imageCell[emptySquareRow][emptySquareCol + 1].setImage(null);
+
+                        ghostArray[emptySquareRow][emptySquareCol].index = ghostArray[emptySquareRow][emptySquareCol + 1].index;
+                        ghostArray[emptySquareRow][emptySquareCol + 1].index = 0;
+
+                        setCol(emptySquareCol + 1);
+                    });
+
+                    switchAnimation_LEFT.play();
+
+                } else {
+
+                    if (emptySquareCol < SelectionMenu.getGridSize() - 1){
+
+                        imageCell[emptySquareRow][emptySquareCol].setImage(imageCell[emptySquareRow][emptySquareCol + 1].getImage());
+                        imageCell[emptySquareRow][emptySquareCol + 1].setImage(null);
+
+                        ghostArray[emptySquareRow][emptySquareCol].index = ghostArray[emptySquareRow][emptySquareCol + 1].index;
+                        ghostArray[emptySquareRow][emptySquareCol + 1].index = 0;
+
+                        setCol(emptySquareCol + 1);
+                    }
                 }
-
 
                 if (Checks.inCorrectOrder(ghostArray)){
 
@@ -348,14 +482,17 @@ public class PicturePuzzle extends Application {
             event.consume();
         });
 
-        //END-------------------------------------------------
 
+        try {
 
+            stage.getIcons().add(new Image("/icon.png")); //APP ICON
+        } catch (Exception e) {
 
-        //START-------------------------------------------------
-        // ADJUST AND SET THE STAGE
+            System.out.println("ERROR: Couldn't load icon: " + e.getMessage());
 
-        stage.getIcons().add(new Image("/icon.png")); //APP ICON
+            stage.getIcons().add(Utilities.createPlaceholderImage(128).getImage());
+        }
+
         stage.setTitle("Slide Puzzle"); // APP TITLE
         stage.setScene(scene);
         stage.show();
@@ -365,11 +502,29 @@ public class PicturePuzzle extends Application {
 
         stage.setMaximized(false); // BREAKS THE SCREEN SOMEHOW
 
-        //END-------------------------------------------------
     }
 
     private double getSize(Stage stage){
 
         return (stage.getWidth() / 4.0) / (double) SelectionMenu.getGridSize();
     }
+
+    private int smallestDimension(Image input){
+
+        if (input.getWidth() < input.getHeight()){
+            return (int) input.getWidth();
+        } else {
+            return (int) input.getHeight();
+        }
+    }
+
+    private static void setRow(int row){
+        emptySquareRow = row;
+        emptySquareIndex = row * SelectionMenu.getGridSize() + emptySquareCol;
+    }
+    private static void setCol(int col){
+        emptySquareCol = col;
+        emptySquareIndex = emptySquareRow * SelectionMenu.getGridSize() + col;
+    }
+
 }
