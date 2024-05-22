@@ -2,16 +2,24 @@ package com.binarybrotherhood.slidepuzzle;
 
 import javafx.scene.input.KeyCode;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Settings {
 
-    private static final Properties settings = new Properties();
+    File settingsFile = new File("src/main/resources/settings.properties");
+
+    private Properties settings = new Properties();
+
+    ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();
+
+
 
     public ArrayList<KeyCode> existingKeys  = new ArrayList<KeyCode>();
+
 
 
     private static KeyCode key_UP = KeyCode.UP;
@@ -19,6 +27,7 @@ public class Settings {
     private static KeyCode key_RIGHT = KeyCode.RIGHT;
     private static KeyCode key_LEFT = KeyCode.LEFT;
     private static KeyCode key_FULLSCREEN = KeyCode.F11;
+
 
 
     public static KeyCode getKey_UP(){
@@ -38,76 +47,131 @@ public class Settings {
     }
 
 
+    public void initializeSettings() {
+
+
+            try {
+                FileInputStream configFileReader = new FileInputStream(settingsFile);
+                settings.load(configFileReader);
+
+            } catch (Exception e) {
+
+                System.out.println("ERROR: Couldn't read settings file: " + e.getMessage());
+            }
+
+
+            try {
+
+                key_UP = KeyCode.valueOf(settings.getProperty("KEY_UP"));
+
+            }catch (Exception e){
+
+                System.out.println("ERROR: KEY_UP");
+            }
+
+            try {
+                key_DOWN = KeyCode.valueOf(settings.getProperty("KEY_DOWN"));
+
+            }catch (Exception e){
+
+                System.out.println("ERROR: KEY_DOWN");
+            }
+
+            try {
+                key_RIGHT = KeyCode.valueOf(settings.getProperty("KEY_RIGHT"));
+
+            }catch (Exception e){
+
+                System.out.println("ERROR: KEY_RIGHT");
+            }
+
+            try {
+                key_LEFT = KeyCode.valueOf(settings.getProperty("KEY_LEFT"));
+
+            }catch (Exception e){
+
+                System.out.println("ERROR: KEY_LEFT");
+            }
+
+            try {
+                key_FULLSCREEN = KeyCode.valueOf(settings.getProperty("KEY_FULLSCREEN"));
+            }catch (Exception e){
+
+                System.out.println("ERROR: KEY_FULLSCREEN");
+            }
 
 
 
 
-    public static void initializeSettings(){
-
-        settings.putIfAbsent("KEY_UP", key_UP);
-        settings.putIfAbsent("KEY_DOWN", key_DOWN);
-        settings.putIfAbsent("KEY_RIGHT", key_RIGHT);
-        settings.putIfAbsent("KEY_LEFT", key_LEFT);
-        settings.putIfAbsent("KEY_FULLSCREEN", key_FULLSCREEN);
-
-        key_UP = (KeyCode) settings.get("KEY_UP");
-        key_DOWN = (KeyCode) settings.get("KEY_DOWN");
-        key_RIGHT = (KeyCode) settings.get("KEY_RIGHT");
-        key_LEFT = (KeyCode) settings.get("KEY_LEFT");
     }
 
-    // Example accessor:
-    public static String getSettingValue(String settingType, String defaultValue) {
+
+    public void createSettings(){
+
+            try {
+
+                settingsFile.getParentFile().mkdir();
+                settingsFile.createNewFile();
+
+                settings.setProperty("KEY_UP", key_UP.toString());
+                saveChanges();
+                settings.setProperty("KEY_DOWN", key_DOWN.toString());
+                saveChanges();
+                settings.setProperty("KEY_RIGHT", key_RIGHT.toString());
+                saveChanges();
+                settings.setProperty("KEY_LEFT", key_LEFT.toString());
+                saveChanges();
+                settings.setProperty("KEY_FULLSCREEN", key_FULLSCREEN.toString());
+                saveChanges();
 
 
-        return settings.getProperty(settingType, defaultValue);
+            }catch (Exception e){
+
+                System.out.println("ERROR: Couldn't create settings file");
+            }
     }
 
-    public static void assignKey(String type, KeyCode key){
-
-        System.out.println("ASSIGNKEY");
-
-        System.out.println("TYPE: " + SelectionMenuController.getKeySession() + " KEY: " + key);
+    public void assignKey(String key, KeyCode value){
 
         switch (SelectionMenuController.getKeySession()){
 
             case "UP":
 
-                key_UP = key;
-                registerKeySettings("KEY_SLIDE_UP", key.toString());
-                SelectionMenuController.setSession(type, key);
+                key_UP = value;
+                registerKeySettings("KEY_UP", value.toString());
+                SelectionMenuController.setSession(key, value);
                 SelectionMenuController.setIsKeyApproved(true);
                 break;
 
             case "DOWN":
 
-                key_DOWN = key;
-                registerKeySettings("KEY_SLIDE_DOWN", key.toString());
-                SelectionMenuController.setSession(type, key);
+                key_DOWN = value;
+                registerKeySettings("KEY_DOWN", value.toString());
+                SelectionMenuController.setSession(key, value);
                 SelectionMenuController.setIsKeyApproved(true);
                 break;
 
             case "RIGHT":
 
-                key_RIGHT = key;
-                registerKeySettings("KEY_SLIDE_RIGHT", key.toString());
-                SelectionMenuController.setSession(type, key);
+                key_RIGHT = value;
+                registerKeySettings("KEY_RIGHT", value.toString());
+                SelectionMenuController.setSession(key, value);
                 SelectionMenuController.setIsKeyApproved(true);
                 break;
 
             case "LEFT":
 
-                key_LEFT = key;
-                registerKeySettings("KEY_SLIDE_LEFT", key.toString());
-                SelectionMenuController.setSession(type, key);
+                key_LEFT = value;
+                registerKeySettings("KEY_LEFT", value.toString());
+                SelectionMenuController.setSession(key, value);
                 SelectionMenuController.setIsKeyApproved(true);
                 break;
 
             case "FULLSCREEN":
 
-                key_FULLSCREEN = key;
-                registerKeySettings("KEY_SLIDE_FULLSCREEN", key.toString());
-                SelectionMenuController.setSession(type, key);
+                key_FULLSCREEN = value;
+                registerKeySettings("KEY_FULLSCREEN", value.toString());
+                SelectionMenuController.setSession(key, value);
                 SelectionMenuController.setIsKeyApproved(true);
                 break;
 
@@ -119,23 +183,34 @@ public class Settings {
 
 
 
-    public static void registerKeySettings(String key, String value){
+    public void registerKeySettings(String key, String value){
 
-        settings.setProperty(key, value);
+        try {
+
+            settings.setProperty(key, value);
+
+        } catch (Exception e) {
+
+            System.out.println("ERROR: Couldn't register key in settings.properties");
+        }
+
+        saveChanges();
     }
 
 
 
-    public static void saveChanges(){
+    public void saveChanges(){
 
-        try (FileOutputStream out = new FileOutputStream("settings.properties")) {
+        try (FileOutputStream out = new FileOutputStream("src/main/resources/settings.properties")) {
 
             settings.store(out, "Saved changes in settings file");
 
         } catch (IOException exception) {
 
-            System.out.println("ERROR IN 'SETTINGS.PROPERTIES': " + exception);
-            System.exit(-1);
+            System.out.println("ERROR IN 'SETTINGS.PROPERTIES': \n" + exception.getMessage());
+            createSettings();
         }
     }
+
+
 }

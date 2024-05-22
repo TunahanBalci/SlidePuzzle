@@ -675,7 +675,13 @@ public class SelectionMenuController {
 
 
     public void initialize(){
-        //System.out.println("INITIALIZED"); //DEBUG
+
+        slideUpButton.setText(Settings.getKey_UP().toString());
+        slideDownButton.setText(Settings.getKey_DOWN().toString());
+        slideRightButton.setText(Settings.getKey_RIGHT().toString());
+        slideLeftButton.setText(Settings.getKey_LEFT().toString());
+        fullscreenButton.setText(Settings.getKey_FULLSCREEN().toString());
+
         playImage_label1.getStyleClass().add("stroke");
         playImage_label2.getStyleClass().add("stroke");
 

@@ -210,9 +210,7 @@ public class PicturePuzzle extends Application {
                     cellBackground.setTranslateX(imageCell[0][0].getTranslateX() - getSize(stage) * 0.1);
                     cellBackground.setTranslateY(imageCell[0][0].getTranslateY() - getSize(stage) * 0.1);
 
-
-
-
+                    
                     imageCell[row][col].setTranslateX((Utilities.spacingWidth / (Utilities.width() / (double) newResolution)) + (getSize(stage) * col));
                     imageCell[row][col].setTranslateY((Utilities.spacingHeight() / (Utilities.height() / stage.getHeight())) + (getSize(stage) * row));
 
@@ -236,9 +234,7 @@ public class PicturePuzzle extends Application {
         }));
 
 
-
-        timeline.setCycleCount(20);
-        timeline.play();
+        timeline.setCycleCount(10);
 
 
         stage.maximizedProperty().addListener(new ChangeListener<Boolean>() {
@@ -265,24 +261,23 @@ public class PicturePuzzle extends Application {
 
         scene.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
 
-
             boolean fullscreen = false;
 
-
-            if (event.getCode() == KeyCode.F11) { // FULLSCREEN
+            if (event.getCode() == Settings.getKey_FULLSCREEN()) { // FULLSCREEN
 
                 fullscreen = !fullscreen;
 
                 stage.setFullScreen(fullscreen);
             }
 
-            else if (event.getCode() == KeyCode.DOWN && canPress){ // SWIPE UP
+            if (!canPress) return;
+
+            else if (event.getCode() == Settings.getKey_DOWN()){ // SWIPE DOWN
 
                 if (SelectionMenu.animations){
+                    canPress = false;
 
                     Timeline switchAnimation_DOWN = new Timeline(new KeyFrame(Duration.millis(10), e -> {
-
-                        canPress = false;
 
                         imageCell[emptySquareRow - 1][emptySquareCol].setTranslateY(imageCell[emptySquareRow - 1][emptySquareCol].getTranslateY() + (getSize(stage) / 20.0));
                     }));
@@ -330,13 +325,12 @@ public class PicturePuzzle extends Application {
 
             }
 
-            else if (event.getCode() == KeyCode.UP && canPress){ // SWIPE DOWN
+            else if (event.getCode() == Settings.getKey_UP()){ // SWIPE UP
 
                 if (SelectionMenu.animations){
+                    canPress = false;
 
                     Timeline switchAnimation_UP = new Timeline(new KeyFrame(Duration.millis(10), e -> {
-
-                        canPress = false;
 
                         imageCell[emptySquareRow + 1][emptySquareCol].setTranslateY(imageCell[emptySquareRow + 1][emptySquareCol].getTranslateY() - (getSize(stage) / 20.0));
                     }));
@@ -381,13 +375,12 @@ public class PicturePuzzle extends Application {
 
             }
 
-            else if (event.getCode() == KeyCode.RIGHT && canPress){ // SWIPE RIGHT
+            else if (event.getCode() == Settings.getKey_RIGHT()){ // SWIPE RIGHT
 
                 if (SelectionMenu.animations){
+                    canPress = false;
 
                     Timeline switchAnimation_RIGHT= new Timeline(new KeyFrame(Duration.millis(10), e -> {
-
-                        canPress = false;
 
                         imageCell[emptySquareRow][emptySquareCol - 1].setTranslateX(imageCell[emptySquareRow][emptySquareCol - 1].getTranslateX() + (getSize(stage) / 20.0));
                     }));
@@ -430,13 +423,12 @@ public class PicturePuzzle extends Application {
                 }
             }
 
-            else if (event.getCode() == KeyCode.LEFT && canPress){ // SWIPE LEFT
+            else if (event.getCode() == Settings.getKey_LEFT()){ // SWIPE LEFT
 
                 if (SelectionMenu.animations){
+                    canPress = false;
 
                     Timeline switchAnimation_LEFT = new Timeline(new KeyFrame(Duration.millis(10), e -> {
-
-                        canPress = false;
 
                         imageCell[emptySquareRow][emptySquareCol + 1].setTranslateX(imageCell[emptySquareRow][emptySquareCol + 1].getTranslateX() - (getSize(stage) / 20.0));
                     }));
@@ -518,6 +510,7 @@ public class PicturePuzzle extends Application {
         }
     }
 
+    
     private static void setRow(int row){
         emptySquareRow = row;
         emptySquareIndex = row * SelectionMenu.getGridSize() + emptySquareCol;

@@ -36,13 +36,15 @@ public class SelectionMenu extends Application {
     public static void setIsSelectingImage(boolean input){
         isSelectingImage = input;
     }
-    
+
 
     @Override
     public void start(Stage stage) throws IOException {
 
 
-        Settings.initializeSettings();
+        Settings settings = new Settings();
+
+        settings.initializeSettings();
 
 
         FXMLLoader fxmlLoader = new FXMLLoader(SelectionMenuController.class.getResource("SelectionMenu.fxml"));
@@ -52,7 +54,6 @@ public class SelectionMenu extends Application {
         stage.setMaxHeight(456);
         stage.setMaxWidth(672);
 
-        StackPane root = new StackPane();
         Scene scene = new Scene(fxmlLoader.load(), 400, 640);
 
         Timeline selectFileListener = new Timeline(new KeyFrame(Duration.seconds(0.1), event -> {
@@ -121,14 +122,12 @@ public class SelectionMenu extends Application {
 
                 if (Checks.checkKeys(event.getCode(), SelectionMenuController.getKeySession())){
 
-                    Settings.assignKey(SelectionMenuController.getKeySession(), event.getCode());
+                    settings.assignKey(SelectionMenuController.getKeySession(), event.getCode());
                 }
             }
 
             event.consume();
         });
-
-
     }
 
 
@@ -143,3 +142,6 @@ public class SelectionMenu extends Application {
         //END-------------------------------------------------
     }
 }
+
+
+

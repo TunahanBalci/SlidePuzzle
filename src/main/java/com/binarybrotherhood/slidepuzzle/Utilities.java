@@ -2,6 +2,7 @@ package com.binarybrotherhood.slidepuzzle;
 
 import javafx.scene.image.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 
 import java.awt.*;
 
@@ -62,6 +63,7 @@ public class Utilities {
     // GET THE HORIZONTAL SPACING (AS PIXELS)
 
     public static double spacingWidth = width() * (3.0 / 8.0);
+
 
     //END-------------------------------------------------
 
