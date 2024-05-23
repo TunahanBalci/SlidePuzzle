@@ -8,6 +8,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -26,6 +27,7 @@ import jdk.jshell.execution.Util;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class NumbersPuzzle extends Application {
 
@@ -50,7 +52,25 @@ public class NumbersPuzzle extends Application {
     @Override
     public void start(Stage stage) {
 
+        ArrayList<ImageView> buttons = new ArrayList<>();
+
         Image squareImage = Utilities.createPlaceholderImage(100).getImage();
+
+
+        ImageView shuffleButton = new ImageView();
+
+        try {
+
+            shuffleButton = new ImageView(new Image(PicturePuzzle.class.getResourceAsStream("/shuffleButton.png")));
+
+        } catch (Exception e) {
+
+            Utilities.createPlaceholderImage(256);
+            System.out.println("ERROR: Couldn't load shuffle button: " + e.getMessage());
+        }
+
+        ImageView [] shuffleButtonList = new ImageView[1];
+        shuffleButtonList[0] = shuffleButton;
 
         try {
 
@@ -65,6 +85,11 @@ public class NumbersPuzzle extends Application {
 
         ImageView background;
 
+        shuffleButton.setTranslateX(200);
+        shuffleButton.setTranslateY(200);
+
+
+        pane.getChildren().add(shuffleButton);
         try {
 
             background = new ImageView(new Image(PicturePuzzle.class.getResourceAsStream("/background.png")));
@@ -175,6 +200,7 @@ public class NumbersPuzzle extends Application {
             cellBackground.setTranslateY(squares[0][0].getTranslateY() - getSize(stage) * 0.1);
             cellBackground.setFitWidth(getSize(stage) * SelectionMenu.getGridSize() + getSize(stage) * 0.2);
             cellBackground.setFitHeight(getSize(stage) * SelectionMenu.getGridSize() + getSize(stage) * 0.2);
+            test(stage, shuffleButtonList[0]);
         });
 
 
@@ -485,6 +511,10 @@ public class NumbersPuzzle extends Application {
             event.consume();
         });
 
+
+
+
+
         //START-------------------------------------------------
         // ADJUST AND SET THE STAGE
 
@@ -579,5 +609,20 @@ public class NumbersPuzzle extends Application {
 
         label.setTranslateX(imageView.getTranslateX() + imageView.getFitWidth() / 2 - label.getWidth() / 2);
         label.setTranslateY(imageView.getTranslateY() + imageView.getFitHeight() / 2 - label.getHeight() / 2);
+    }
+
+
+    private void alignButtons (Stage stage, ArrayList<ImageView> list){
+
+        for (int i = 0; i < list.size(); i++){
+
+            list.get(i).setTranslateX(stage.getWidth() * (double) (9 / 32) - list.get(i).getFitWidth() / 2);
+            list.get(i).setTranslateX(stage.getWidth() * (double) (1 / 2) - list.get(i).getFitHeight() / 2);
+        }
+    }
+
+    private void test (Stage stage, ImageView imageView){
+        imageView.setFitWidth(getSize(stage) / 4);
+        imageView.setFitHeight(getSize(stage) / 16);
     }
 }

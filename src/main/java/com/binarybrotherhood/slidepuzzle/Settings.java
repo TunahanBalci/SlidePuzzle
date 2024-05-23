@@ -66,7 +66,7 @@ public class Settings {
 
             }catch (Exception e){
 
-                System.out.println("ERROR: KEY_UP");
+                System.out.println("ERROR: SETTINGS_KEY_UP");
             }
 
             try {
@@ -74,7 +74,7 @@ public class Settings {
 
             }catch (Exception e){
 
-                System.out.println("ERROR: KEY_DOWN");
+                System.out.println("ERROR: SETTINGS_KEY_DOWN");
             }
 
             try {
@@ -82,7 +82,7 @@ public class Settings {
 
             }catch (Exception e){
 
-                System.out.println("ERROR: KEY_RIGHT");
+                System.out.println("ERROR: SETTINGS_KEY_RIGHT");
             }
 
             try {
@@ -90,16 +90,22 @@ public class Settings {
 
             }catch (Exception e){
 
-                System.out.println("ERROR: KEY_LEFT");
+                System.out.println("ERROR: SETTINGS_KEY_LEFT");
             }
 
             try {
                 key_FULLSCREEN = KeyCode.valueOf(settings.getProperty("KEY_FULLSCREEN"));
             }catch (Exception e){
 
-                System.out.println("ERROR: KEY_FULLSCREEN");
+                System.out.println("ERROR: SETTINGS_KEY_FULLSCREEN");
             }
 
+            try {
+                SelectionMenu.animations = Boolean.parseBoolean(settings.getProperty("ANIMATIONS"));
+            }catch (Exception e){
+
+                System.out.println("ERROR: SETTINGS_ANIMATIONS");
+            }
 
 
 
@@ -123,6 +129,7 @@ public class Settings {
                 saveChanges();
                 settings.setProperty("KEY_FULLSCREEN", key_FULLSCREEN.toString());
                 saveChanges();
+                settings.setProperty("ANIMATIONS", "true");
 
 
             }catch (Exception e){
