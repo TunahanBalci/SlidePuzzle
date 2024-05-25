@@ -7,6 +7,7 @@ module com.binarybrotherhood.slidepuzzle {
     requires javafx.swing;
     requires javafx.base;
     requires jdk.jshell;
+    requires javafx.media;
 
 
     opens com.binarybrotherhood.slidepuzzle to javafx.fxml;

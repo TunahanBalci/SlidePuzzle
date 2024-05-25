@@ -23,6 +23,7 @@ public class SelectionMenu extends Application {
     public static boolean animations = true;
     public static int gameModeIndex;
     private static boolean isSelectingImage = false;
+    public static boolean sounds = true;
 
 
     public static void setGridSize(int input){

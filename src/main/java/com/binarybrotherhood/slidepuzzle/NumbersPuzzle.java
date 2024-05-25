@@ -5,29 +5,23 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.control.Label;
-import javafx.scene.text.Font;
 import javafx.util.Duration;
-import jdk.jshell.execution.Util;
 
-import javax.imageio.ImageIO;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Random;
 
 public class NumbersPuzzle extends Application {
 
@@ -37,59 +31,62 @@ public class NumbersPuzzle extends Application {
     private static int emptySquareRow = 0;
     private static int emptySquareCol = 0;
 
-    private static Image inputImage = new Image(PicturePuzzle.class.getResourceAsStream("/latest_image.png"));
-
-    public static void assignImage(Image input){
-
-        inputImage = input;
-    }
-
-    public static Image getImage(){
-
-        return inputImage;
-    }
+    private Random random = new Random();
 
     @Override
     public void start(Stage stage) {
-
-        ArrayList<ImageView> buttons = new ArrayList<>();
+        Pane pane = new Pane();
 
         Image squareImage = Utilities.createPlaceholderImage(100).getImage();
 
 
-        ImageView shuffleButton = new ImageView();
-
-        try {
-
-            shuffleButton = new ImageView(new Image(PicturePuzzle.class.getResourceAsStream("/shuffleButton.png")));
-
-        } catch (Exception e) {
-
-            Utilities.createPlaceholderImage(256);
-            System.out.println("ERROR: Couldn't load shuffle button: " + e.getMessage());
-        }
-
-        ImageView [] shuffleButtonList = new ImageView[1];
-        shuffleButtonList[0] = shuffleButton;
+        ImageView [] buttons = new ImageView[1];
+        Label [] buttonTexts = new Label[1];
 
         try {
 
             squareImage = new Image(PicturePuzzle.class.getResourceAsStream("/square.png"));
-
         } catch (Exception e) {
 
             System.out.println("ERROR: Couldn't load square image: " + e.getMessage());
         }
 
-        Pane pane = new Pane();
+        buttons[0] = new ImageView(squareImage);
+
+        buttonTexts[0] = new Label("SHUFFLE");
+        buttonTexts[0].setStyle(" -fx-text-fill:#000000; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + 20 + ";");
+
+
+
+//        Media soundResource_swipe = null;
+//        Media soundResource_swipe2 = null;
+//
+//        soundResource_swipe = new Media(new File("src/main/resources/swipe.mp3").toURI().toString());
+//        soundResource_swipe2 = new Media(new File("src/main/resources/swipe_2.mp3").toURI().toString());
+//
+//        MediaPlayer sound_swipe = new MediaPlayer(soundResource_swipe);
+//        MediaPlayer sound_swipe2 = new MediaPlayer(soundResource_swipe2);
+//
+//        sound_swipe.setVolume(0.5);
+//        sound_swipe2.setVolume(0.5);
+//
+
+// Get the URI of the sound file
+        String soundFileURI = getClass().getResource("/senVeBen.mp3").toString();
+
+// Create a Media object
+        Media sound = new Media(soundFileURI);
+
+// Create a MediaPlayer object
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+
+// Play the sound
+        mediaPlayer.play();
+
+
 
         ImageView background;
 
-        shuffleButton.setTranslateX(200);
-        shuffleButton.setTranslateY(200);
-
-
-        pane.getChildren().add(shuffleButton);
         try {
 
             background = new ImageView(new Image(PicturePuzzle.class.getResourceAsStream("/background.png")));
@@ -105,6 +102,8 @@ public class NumbersPuzzle extends Application {
         background.fitWidthProperty().bind(pane.widthProperty());
         background.fitHeightProperty().bind(pane.heightProperty());
         pane.getChildren().add(background);
+
+
 
         ImageView cellBackground = Utilities.createCellBackground(400);
         cellBackground.setFitWidth(getSize(stage) * SelectionMenu.getGridSize() + getSize(stage) * 0.2);
@@ -144,25 +143,21 @@ public class NumbersPuzzle extends Application {
                 }
 
 
-
-
-
-
                 pane.getChildren().add(squares[row][col]);
                 pane.getChildren().add(numbers[row][col]);
             }
         }
+
+
         alignPosition(stage, squares);
         setLabels(stage, numbers, squares);
         cellBackground.setTranslateX(squares[0][0].getTranslateX() - getSize(stage) * 0.1);
         cellBackground.setTranslateY(squares[0][0].getTranslateY() - getSize(stage) * 0.1);
 
-        //END-------------------------------------------------
-
-
-
-        //START-------------------------------------------------
-        // CREATE, ADD AND ADJUST HEADER
+        buttons[0].setFitWidth(getSize(stage) / 4.0 * 3.0);
+        buttons[0].setFitHeight(getSize(stage) / 16.0 * 3.0);
+        buttons[0].setTranslateX(stage.getWidth() / 4 - buttons[0].getFitWidth() / 2);
+        buttons[0].setTranslateY(stage.getHeight() / 2 - buttons[0].getFitHeight() / 2);
 
         DropShadow ds = new DropShadow(); //CSS EFFECT (DROPSHADOW)
         ds.setOffsetY(3.0f);
@@ -175,19 +170,31 @@ public class NumbersPuzzle extends Application {
 
         pane.getChildren().add(header);
 
-        header.layoutXProperty().bind(pane.widthProperty().subtract(header.widthProperty()).divide(2));
-        header.layoutYProperty().bind(pane.heightProperty().subtract(header.widthProperty()).divide(5));
+        for (int i = 0; i < buttons.length; i++){
+            pane.getChildren().add(buttons[i]);
+            pane.getChildren().add(buttonTexts[i]);
+        }
+
+        header.scaleXProperty().bind(pane.widthProperty().divide(Utilities.width()));
+        header.scaleYProperty().bind(pane.heightProperty().divide(Utilities.height()));
 
 
 
         stage.heightProperty().addListener((observableValue, oldResolution, newResolution) -> {
 
-            alignPosition_VERTICAL(stage, squares);
+            alignPosition(stage, squares);
             setLabels(stage, numbers, squares);
+
             cellBackground.setTranslateX(squares[0][0].getTranslateX() - getSize(stage) * 0.1);
             cellBackground.setTranslateY(squares[0][0].getTranslateY() - getSize(stage) * 0.1);
             cellBackground.setFitWidth(getSize(stage) * SelectionMenu.getGridSize() + getSize(stage) * 0.2);
             cellBackground.setFitHeight(getSize(stage) * SelectionMenu.getGridSize() + getSize(stage) * 0.2);
+
+            alignButtonPosition(stage, buttons);
+            alignButtonSize(stage, buttons);
+            setButtonTexts(stage, buttons, buttonTexts);
+
+            setHeader(stage, header, squares);
         });
 
 
@@ -196,16 +203,23 @@ public class NumbersPuzzle extends Application {
             alignSize(stage, squares);
             alignPosition(stage, squares);
             setLabels(stage, numbers, squares);
+
             cellBackground.setTranslateX(squares[0][0].getTranslateX() - getSize(stage) * 0.1);
             cellBackground.setTranslateY(squares[0][0].getTranslateY() - getSize(stage) * 0.1);
             cellBackground.setFitWidth(getSize(stage) * SelectionMenu.getGridSize() + getSize(stage) * 0.2);
             cellBackground.setFitHeight(getSize(stage) * SelectionMenu.getGridSize() + getSize(stage) * 0.2);
-            test(stage, shuffleButtonList[0]);
+
+            alignButtonPosition(stage, buttons);
+            alignButtonSize(stage, buttons);
+            setButtonTexts(stage, buttons, buttonTexts);
+
+            setHeader(stage, header, squares);
+
         });
 
 
 
-        Timeline reAlignKeys = new Timeline(new KeyFrame(Duration.seconds(0.1), event -> {
+        Timeline reAlignElements = new Timeline(new KeyFrame(Duration.seconds(0.05), event -> {
 
             alignSize(stage, squares);
             alignPosition(stage, squares);
@@ -214,17 +228,22 @@ public class NumbersPuzzle extends Application {
             cellBackground.setTranslateY(squares[0][0].getTranslateY() - getSize(stage) * 0.1);
             cellBackground.setFitWidth(getSize(stage) * SelectionMenu.getGridSize() + getSize(stage) * 0.2);
             cellBackground.setFitHeight(getSize(stage) * SelectionMenu.getGridSize() + getSize(stage) * 0.2);
+
+            alignButtonSize(stage, buttons);
+            alignButtonPosition(stage, buttons);
+            setButtonTexts(stage, buttons, buttonTexts);
+            setHeader(stage, header, squares);
         }));
 
-        reAlignKeys.setCycleCount(10);
-        reAlignKeys.play();
+        reAlignElements.setCycleCount(10);
+        reAlignElements.play();
 
         stage.maximizedProperty().addListener(new ChangeListener<Boolean>() {
 
             @Override
             public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
 
-                reAlignKeys.play();
+                reAlignElements.play();
             }
         });
 
@@ -260,42 +279,51 @@ public class NumbersPuzzle extends Application {
             else if (event.getCode() == Settings.getKey_DOWN()){ // SWIPE DOWN
 
                 if (SelectionMenu.animations){
-                    canPress = false;
 
-                    Timeline switchAnimation_DOWN = new Timeline(new KeyFrame(Duration.millis(10), e -> {
+                    if (emptySquareRow > 0) {
+
+
+//                        if (SelectionMenu.sounds) randomSwipeSound(sound_swipe, sound_swipe2);
 
                         canPress = false;
 
-                        squares[emptySquareRow - 1][emptySquareCol].setTranslateY(squares[emptySquareRow - 1][emptySquareCol].getTranslateY() + (getSize(stage) / 20.0));
-                        setLabels_SINGULAR(stage, numbers[emptySquareRow - 1][emptySquareCol], squares[emptySquareRow - 1][emptySquareCol]);
-                    }));
+                        Timeline switchAnimation_DOWN = new Timeline(new KeyFrame(Duration.millis(10), e -> {
 
-                    switchAnimation_DOWN.setCycleCount(20);
-                    switchAnimation_DOWN.setOnFinished(e -> {
+                            canPress = false;
 
-                        canPress = true;
+                            squares[emptySquareRow - 1][emptySquareCol].setTranslateY(squares[emptySquareRow - 1][emptySquareCol].getTranslateY() + (getSize(stage) / 20.0));
+                            setLabels_SINGULAR(stage, numbers[emptySquareRow - 1][emptySquareCol], squares[emptySquareRow - 1][emptySquareCol]);
+                        }));
 
-                        squares[emptySquareRow - 1][emptySquareCol].setTranslateY(squares[emptySquareRow - 1][emptySquareCol].getTranslateY() - (getSize(stage)));
+                        switchAnimation_DOWN.setCycleCount(20);
+                        switchAnimation_DOWN.setOnFinished(e -> {
 
-                        squares[emptySquareRow][emptySquareCol].setImage(squares[emptySquareRow - 1][emptySquareCol].getImage());
-                        squares[emptySquareRow - 1][emptySquareCol].setImage(null);
+                            canPress = true;
 
-                        ghostArray[emptySquareRow][emptySquareCol].index = ghostArray[emptySquareRow - 1][emptySquareCol].index;
-                        ghostArray[emptySquareRow - 1][emptySquareCol].index = 0;
+                            squares[emptySquareRow - 1][emptySquareCol].setTranslateY(squares[emptySquareRow - 1][emptySquareCol].getTranslateY() - (getSize(stage)));
 
-                        Label temp = numbers[emptySquareRow][emptySquareCol];
-                        numbers[emptySquareRow][emptySquareCol] = numbers[emptySquareRow - 1][emptySquareCol];
-                        numbers[emptySquareRow - 1][emptySquareCol] = temp;
-                        numbers[emptySquareRow][emptySquareCol].toFront();
+                            squares[emptySquareRow][emptySquareCol].setImage(squares[emptySquareRow - 1][emptySquareCol].getImage());
+                            squares[emptySquareRow - 1][emptySquareCol].setImage(null);
 
-                        setRow(emptySquareRow - 1);
+                            ghostArray[emptySquareRow][emptySquareCol].index = ghostArray[emptySquareRow - 1][emptySquareCol].index;
+                            ghostArray[emptySquareRow - 1][emptySquareCol].index = 0;
 
-                    });
+                            Label temp = numbers[emptySquareRow][emptySquareCol];
+                            numbers[emptySquareRow][emptySquareCol] = numbers[emptySquareRow - 1][emptySquareCol];
+                            numbers[emptySquareRow - 1][emptySquareCol] = temp;
+                            numbers[emptySquareRow][emptySquareCol].toFront();
 
-                    switchAnimation_DOWN.play();
+                            setRow(emptySquareRow - 1);
+
+                        });
+
+                        switchAnimation_DOWN.play();
+                    }
                 } else {
 
                     if (emptySquareRow > 0){
+
+//                        if (SelectionMenu.sounds) randomSwipeSound(sound_swipe, sound_swipe2);
 
                         squares[emptySquareRow][emptySquareCol].setImage(squares[emptySquareRow - 1][emptySquareCol].getImage());
                         squares[emptySquareRow - 1][emptySquareCol].setImage(null);
@@ -326,43 +354,50 @@ public class NumbersPuzzle extends Application {
             else if (event.getCode() == Settings.getKey_UP()){ // SWIPE UP
 
                 if (SelectionMenu.animations){
-                    canPress = false;
 
-                    Timeline switchAnimation_UP = new Timeline(new KeyFrame(Duration.millis(10), e -> {
+                    if (emptySquareRow < SelectionMenu.getGridSize() - 1) {
+
+//                        if (SelectionMenu.sounds) randomSwipeSound(sound_swipe, sound_swipe2);
 
                         canPress = false;
 
-                        squares[emptySquareRow + 1][emptySquareCol].setTranslateY(squares[emptySquareRow + 1][emptySquareCol].getTranslateY() - (getSize(stage) / 20.0));
-                        setLabels_SINGULAR(stage, numbers[emptySquareRow + 1][emptySquareCol], squares[emptySquareRow + 1][emptySquareCol]);
-                    }));
+                        Timeline switchAnimation_UP = new Timeline(new KeyFrame(Duration.millis(10), e -> {
 
-                    switchAnimation_UP.setCycleCount(20);
-                    switchAnimation_UP.setOnFinished(e -> {
+                            canPress = false;
 
-                        canPress = true;
+                            squares[emptySquareRow + 1][emptySquareCol].setTranslateY(squares[emptySquareRow + 1][emptySquareCol].getTranslateY() - (getSize(stage) / 20.0));
+                            setLabels_SINGULAR(stage, numbers[emptySquareRow + 1][emptySquareCol], squares[emptySquareRow + 1][emptySquareCol]);
+                        }));
 
-                        squares[emptySquareRow + 1][emptySquareCol].setTranslateY(squares[emptySquareRow + 1][emptySquareCol].getTranslateY() + (getSize(stage)));
+                        switchAnimation_UP.setCycleCount(20);
+                        switchAnimation_UP.setOnFinished(e -> {
 
-                        squares[emptySquareRow][emptySquareCol].setImage(squares[emptySquareRow + 1][emptySquareCol].getImage());
-                        squares[emptySquareRow + 1][emptySquareCol].setImage(null);
+                            canPress = true;
 
-                        ghostArray[emptySquareRow][emptySquareCol].index = ghostArray[emptySquareRow + 1][emptySquareCol].index;
-                        ghostArray[emptySquareRow + 1][emptySquareCol].index = 0;
+                            squares[emptySquareRow + 1][emptySquareCol].setTranslateY(squares[emptySquareRow + 1][emptySquareCol].getTranslateY() + (getSize(stage)));
 
-                        Label temp = numbers[emptySquareRow][emptySquareCol];
-                        numbers[emptySquareRow][emptySquareCol] = numbers[emptySquareRow + 1][emptySquareCol];
-                        numbers[emptySquareRow + 1][emptySquareCol] = temp;
-                        numbers[emptySquareRow][emptySquareCol].toFront();
+                            squares[emptySquareRow][emptySquareCol].setImage(squares[emptySquareRow + 1][emptySquareCol].getImage());
+                            squares[emptySquareRow + 1][emptySquareCol].setImage(null);
 
-                        setRow(emptySquareRow + 1);
-                    });
+                            ghostArray[emptySquareRow][emptySquareCol].index = ghostArray[emptySquareRow + 1][emptySquareCol].index;
+                            ghostArray[emptySquareRow + 1][emptySquareCol].index = 0;
 
-                    switchAnimation_UP.play();
+                            Label temp = numbers[emptySquareRow][emptySquareCol];
+                            numbers[emptySquareRow][emptySquareCol] = numbers[emptySquareRow + 1][emptySquareCol];
+                            numbers[emptySquareRow + 1][emptySquareCol] = temp;
+                            numbers[emptySquareRow][emptySquareCol].toFront();
 
+                            setRow(emptySquareRow + 1);
+                        });
 
+                        switchAnimation_UP.play();
+
+                    }
                 } else {
 
                     if (emptySquareRow < SelectionMenu.getGridSize() - 1){
+
+//                        if (SelectionMenu.sounds) randomSwipeSound(sound_swipe, sound_swipe2);
 
                         squares[emptySquareRow][emptySquareCol].setImage(squares[emptySquareRow + 1][emptySquareCol].getImage());
                         squares[emptySquareRow + 1][emptySquareCol].setImage(null);
@@ -388,43 +423,51 @@ public class NumbersPuzzle extends Application {
 
             else if (event.getCode() == Settings.getKey_RIGHT()){ // SWIPE RIGHT
 
-                if (SelectionMenu.animations){
-                    canPress = false;
+                if (SelectionMenu.animations) {
 
-                    Timeline switchAnimation_RIGHT= new Timeline(new KeyFrame(Duration.millis(10), e -> {
+                    if (emptySquareCol > 0) {
+
+//                        if (SelectionMenu.sounds) randomSwipeSound(sound_swipe, sound_swipe2);
 
                         canPress = false;
 
-                        squares[emptySquareRow][emptySquareCol - 1].setTranslateX(squares[emptySquareRow][emptySquareCol - 1].getTranslateX() + (getSize(stage) / 20.0));
-                        setLabels_SINGULAR(stage, numbers[emptySquareRow][emptySquareCol - 1], squares[emptySquareRow][emptySquareCol - 1]);
-                    }));
+                        Timeline switchAnimation_RIGHT = new Timeline(new KeyFrame(Duration.millis(10), e -> {
 
-                    switchAnimation_RIGHT.setCycleCount(20);
-                    switchAnimation_RIGHT.setOnFinished(e -> {
+                            canPress = false;
 
-                        canPress = true;
+                            squares[emptySquareRow][emptySquareCol - 1].setTranslateX(squares[emptySquareRow][emptySquareCol - 1].getTranslateX() + (getSize(stage) / 20.0));
+                            setLabels_SINGULAR(stage, numbers[emptySquareRow][emptySquareCol - 1], squares[emptySquareRow][emptySquareCol - 1]);
+                        }));
 
-                        squares[emptySquareRow][emptySquareCol - 1].setTranslateX(squares[emptySquareRow][emptySquareCol - 1].getTranslateX() - (getSize(stage)));
+                        switchAnimation_RIGHT.setCycleCount(20);
+                        switchAnimation_RIGHT.setOnFinished(e -> {
 
-                        squares[emptySquareRow][emptySquareCol].setImage(squares[emptySquareRow][emptySquareCol - 1].getImage());
-                        squares[emptySquareRow][emptySquareCol - 1].setImage(null);
+                            canPress = true;
 
-                        ghostArray[emptySquareRow][emptySquareCol].index = ghostArray[emptySquareRow][emptySquareCol - 1].index;
-                        ghostArray[emptySquareRow][emptySquareCol - 1].index = 0;
+                            squares[emptySquareRow][emptySquareCol - 1].setTranslateX(squares[emptySquareRow][emptySquareCol - 1].getTranslateX() - (getSize(stage)));
 
-                        Label temp = numbers[emptySquareRow][emptySquareCol];
-                        numbers[emptySquareRow][emptySquareCol] = numbers[emptySquareRow][emptySquareCol - 1];
-                        numbers[emptySquareRow][emptySquareCol - 1] = temp;
-                        numbers[emptySquareRow][emptySquareCol].toFront();
+                            squares[emptySquareRow][emptySquareCol].setImage(squares[emptySquareRow][emptySquareCol - 1].getImage());
+                            squares[emptySquareRow][emptySquareCol - 1].setImage(null);
 
-                        setCol(emptySquareCol - 1);
-                    });
+                            ghostArray[emptySquareRow][emptySquareCol].index = ghostArray[emptySquareRow][emptySquareCol - 1].index;
+                            ghostArray[emptySquareRow][emptySquareCol - 1].index = 0;
 
-                    switchAnimation_RIGHT.play();
+                            Label temp = numbers[emptySquareRow][emptySquareCol];
+                            numbers[emptySquareRow][emptySquareCol] = numbers[emptySquareRow][emptySquareCol - 1];
+                            numbers[emptySquareRow][emptySquareCol - 1] = temp;
+                            numbers[emptySquareRow][emptySquareCol].toFront();
 
+                            setCol(emptySquareCol - 1);
+                        });
+
+                        switchAnimation_RIGHT.play();
+                    }
                 } else {
 
                     if (emptySquareCol > 0){
+
+//                        if (SelectionMenu.sounds) randomSwipeSound(sound_swipe, sound_swipe2);
+
 
                         squares[emptySquareRow][emptySquareCol].setImage(squares[emptySquareRow][emptySquareCol - 1].getImage());
                         squares[emptySquareRow][emptySquareCol - 1].setImage(null);
@@ -450,42 +493,50 @@ public class NumbersPuzzle extends Application {
             else if (event.getCode() == Settings.getKey_LEFT()){ // SWIPE LEFT
 
                 if (SelectionMenu.animations){
-                    canPress = false;
 
-                    Timeline switchAnimation_LEFT = new Timeline(new KeyFrame(Duration.millis(10), e -> {
+                    if (emptySquareCol < SelectionMenu.getGridSize() - 1) {
+
+//                        if (SelectionMenu.sounds) randomSwipeSound(sound_swipe, sound_swipe2);
 
                         canPress = false;
 
-                        squares[emptySquareRow][emptySquareCol + 1].setTranslateX(squares[emptySquareRow][emptySquareCol + 1].getTranslateX() - (getSize(stage) / 20.0));
-                        setLabels_SINGULAR(stage, numbers[emptySquareRow][emptySquareCol + 1], squares[emptySquareRow][emptySquareCol + 1]);
-                    }));
+                        Timeline switchAnimation_LEFT = new Timeline(new KeyFrame(Duration.millis(10), e -> {
 
-                    switchAnimation_LEFT.setCycleCount(20);
-                    switchAnimation_LEFT.setOnFinished(e -> {
+                            canPress = false;
 
-                        canPress = true;
+                            squares[emptySquareRow][emptySquareCol + 1].setTranslateX(squares[emptySquareRow][emptySquareCol + 1].getTranslateX() - (getSize(stage) / 20.0));
+                            setLabels_SINGULAR(stage, numbers[emptySquareRow][emptySquareCol + 1], squares[emptySquareRow][emptySquareCol + 1]);
+                        }));
 
-                        squares[emptySquareRow][emptySquareCol + 1].setTranslateX(squares[emptySquareRow][emptySquareCol + 1].getTranslateX() + (getSize(stage)));
+                        switchAnimation_LEFT.setCycleCount(20);
+                        switchAnimation_LEFT.setOnFinished(e -> {
 
-                        squares[emptySquareRow][emptySquareCol].setImage(squares[emptySquareRow][emptySquareCol + 1].getImage());
-                        squares[emptySquareRow][emptySquareCol + 1].setImage(null);
+                            canPress = true;
 
-                        ghostArray[emptySquareRow][emptySquareCol].index = ghostArray[emptySquareRow][emptySquareCol + 1].index;
-                        ghostArray[emptySquareRow][emptySquareCol + 1].index = 0;
+                            squares[emptySquareRow][emptySquareCol + 1].setTranslateX(squares[emptySquareRow][emptySquareCol + 1].getTranslateX() + (getSize(stage)));
 
-                        Label temp = numbers[emptySquareRow][emptySquareCol];
-                        numbers[emptySquareRow][emptySquareCol] = numbers[emptySquareRow][emptySquareCol + 1];
-                        numbers[emptySquareRow][emptySquareCol + 1] = temp;
-                        numbers[emptySquareRow][emptySquareCol].toFront();
+                            squares[emptySquareRow][emptySquareCol].setImage(squares[emptySquareRow][emptySquareCol + 1].getImage());
+                            squares[emptySquareRow][emptySquareCol + 1].setImage(null);
 
-                        setCol(emptySquareCol + 1);
-                    });
+                            ghostArray[emptySquareRow][emptySquareCol].index = ghostArray[emptySquareRow][emptySquareCol + 1].index;
+                            ghostArray[emptySquareRow][emptySquareCol + 1].index = 0;
 
-                    switchAnimation_LEFT.play();
+                            Label temp = numbers[emptySquareRow][emptySquareCol];
+                            numbers[emptySquareRow][emptySquareCol] = numbers[emptySquareRow][emptySquareCol + 1];
+                            numbers[emptySquareRow][emptySquareCol + 1] = temp;
+                            numbers[emptySquareRow][emptySquareCol].toFront();
 
+                            setCol(emptySquareCol + 1);
+                        });
+
+                        switchAnimation_LEFT.play();
+                    }
                 } else {
 
                     if (emptySquareCol < SelectionMenu.getGridSize() - 1){
+
+//                        if (SelectionMenu.sounds) randomSwipeSound(sound_swipe, sound_swipe2);
+
 
                         squares[emptySquareRow][emptySquareCol].setImage(squares[emptySquareRow][emptySquareCol + 1].getImage());
                         squares[emptySquareRow][emptySquareCol + 1].setImage(null);
@@ -518,6 +569,7 @@ public class NumbersPuzzle extends Application {
         //START-------------------------------------------------
         // ADJUST AND SET THE STAGE
 
+
         try {
 
             stage.getIcons().add(new Image("/icon.png")); //APP ICON
@@ -537,7 +589,6 @@ public class NumbersPuzzle extends Application {
 
         stage.setMaximized(false); // BREAKS THE SCREEN SOMEHOW
 
-        //END-------------------------------------------------
     }
     private double getSize(Stage stage){
 
@@ -556,25 +607,27 @@ public class NumbersPuzzle extends Application {
         emptySquareCol = col;
         emptySquareIndex = emptySquareRow * SelectionMenu.getGridSize() + col;
     }
-    
+
     private void alignPosition(Stage stage, ImageView[][] imageViews){
-        
+
+        if (SelectionMenu.getGridSize() % 2 == 0){
+            for (int row = 0; row < SelectionMenu.getGridSize(); row++){
+                for (int col = 0; col < SelectionMenu.getGridSize(); col++){
+
+
+                    imageViews[row][col].setTranslateX(stage.getWidth() / 2 - getSize(stage) * SelectionMenu.getGridSize() / 2 + (getSize(stage) * col));
+                    imageViews[row][col].setTranslateY(stage.getHeight() / 2 - getSize(stage) * SelectionMenu.getGridSize() / 2 + (getSize(stage) * row));
+                }
+            }
+            return;
+        }
+
         for (int row = 0; row < SelectionMenu.getGridSize(); row++){
             for (int col = 0; col < SelectionMenu.getGridSize(); col++){
 
 
-                imageViews[row][col].setTranslateX((Utilities.spacingWidth / (Utilities.width() / stage.getWidth())) + (getSize(stage) * col));
-                imageViews[row][col].setTranslateY((Utilities.spacingHeight() / (Utilities.height() / stage.getHeight())) + (getSize(stage) * row));
-            }
-        }
-    }
-
-    private void alignPosition_VERTICAL(Stage stage, ImageView[][] imageViews) {
-
-        for (int row = 0; row < SelectionMenu.getGridSize(); row++) {
-            for (int col = 0; col < SelectionMenu.getGridSize(); col++) {
-
-                imageViews[row][col].setTranslateY(Utilities.spacingHeight() + getSize(stage) * row);
+                imageViews[row][col].setTranslateX(stage.getWidth() / 2 - getSize(stage) * ((SelectionMenu.getGridSize() - 1) / 2) + (getSize(stage) * col) - getSize(stage) / 2);
+                imageViews[row][col].setTranslateY(stage.getHeight() / 2 - getSize(stage) * ((SelectionMenu.getGridSize() - 1) / 2) + (getSize(stage) * row) - getSize(stage) / 2);
             }
         }
     }
@@ -612,17 +665,63 @@ public class NumbersPuzzle extends Application {
     }
 
 
-    private void alignButtons (Stage stage, ArrayList<ImageView> list){
+    private void alignButtonPosition (Stage stage, ImageView[] buttons) {
 
-        for (int i = 0; i < list.size(); i++){
+        buttons[0].setTranslateX(stage.getWidth() / 4 - buttons[0].getFitWidth() / 2);
+        buttons[0].setTranslateY(stage.getHeight() / 2 - buttons[0].getFitHeight() / 2);
 
-            list.get(i).setTranslateX(stage.getWidth() * (double) (9 / 32) - list.get(i).getFitWidth() / 2);
-            list.get(i).setTranslateX(stage.getWidth() * (double) (1 / 2) - list.get(i).getFitHeight() / 2);
+    }
+    private void alignButtonSize (Stage stage, ImageView[] buttons) {
+
+        buttons[0].setFitWidth(getSize(stage) / 4 * 3);
+        buttons[0].setFitHeight(getSize(stage) / 2);
+
+    }
+
+    private void setButtonTexts(Stage stage, ImageView[] buttons, Label[] buttonTexts){
+
+        for (int i = 0; i < buttons.length; i++){
+
+            double size_double = (stage.getWidth() / 96.0);
+
+            int size = (int) (size_double - (size_double % 1.0));
+            buttonTexts[i].setStyle(" -fx-text-fill:#47321e; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + size + ";");
+
+            buttonTexts[i].setTranslateX(buttons[i].getTranslateX() + buttons[i].getFitWidth() / 2 - buttonTexts[i].getWidth() / 2);
+            buttonTexts[i].setTranslateY(buttons[i].getTranslateY() + buttons[i].getFitHeight() / 2 - buttonTexts[i].getHeight() / 2);
+
         }
     }
 
-    private void test (Stage stage, ImageView imageView){
-        imageView.setFitWidth(getSize(stage) / 4);
-        imageView.setFitHeight(getSize(stage) / 16);
+    private void setHeader(Stage stage, Label header, ImageView[][] squares){
+
+        double size_double = (stage.getWidth() / 32.0);
+
+        int size = (int) (size_double - (size_double % 1.0));
+
+        header.setStyle(" -fx-text-fill:#9fd5c1; -fx-font-family: 'Papyrus'; -fx-font-size: " + size + ";");
+
+        if (header.getHeight() * (3.0 / 2.0) > squares[0][0].getTranslateY()){
+            header.setVisible(false);
+        } else {
+
+            header.setVisible(true);
+            header.setTranslateY(squares[0][0].getTranslateY() / 2 - header.getHeight() / 2);
+            header.setTranslateX(stage.getWidth() / 2 - header.getWidth() / 2);
+
+            header.setTranslateY(squares[0][0].getTranslateY() / 2 - header.getHeight() / 2);
+            header.setTranslateX(stage.getWidth() / 2 - header.getWidth() / 2);
+        }
+    }
+
+    private void randomSwipeSound (MediaPlayer swipe, MediaPlayer swipe_2) { //github copilot
+
+        if (random.nextBoolean()) {
+
+            swipe.play();
+        } else {
+
+            swipe_2.play();
+        }
     }
 }
