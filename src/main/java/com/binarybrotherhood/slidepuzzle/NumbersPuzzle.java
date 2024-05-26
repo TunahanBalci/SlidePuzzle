@@ -1,15 +1,19 @@
 package com.binarybrotherhood.slidepuzzle;
 
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
@@ -17,8 +21,7 @@ import javafx.stage.Stage;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
 
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.*;
 
 import java.io.File;
 import java.util.Random;
@@ -31,17 +34,31 @@ public class NumbersPuzzle extends Application {
     private static int emptySquareRow = 0;
     private static int emptySquareCol = 0;
 
-    private Random random = new Random();
+    private Media soundResource_swipe = null;
+    private Media backgroundMusic = null;
+    private Image squareImage = Utilities.createPlaceholderImage(100).getImage();
+    private ElementProperties[][] ghostArray = Randomizer.getRandomArray(SelectionMenu.getGridSize(), "Number");
+    private ImageView [][] squares = new ImageView[SelectionMenu.getGridSize()][SelectionMenu.getGridSize()];
+    private Label [][] numbers = new Label[SelectionMenu.getGridSize()][SelectionMenu.getGridSize()];
+    private int timeCounter = 0;
+    private ImageView [] buttons = new ImageView[4];
+
 
     @Override
     public void start(Stage stage) {
         Pane pane = new Pane();
 
-        Image squareImage = Utilities.createPlaceholderImage(100).getImage();
+        backgroundMusicPlayer();
+
+        MediaPlayer initialBackgroundMusic = new MediaPlayer(backgroundMusic);
+        initialBackgroundMusic.setVolume(0.15);
+        initialBackgroundMusic.play();
 
 
-        ImageView [] buttons = new ImageView[1];
         Label [] buttonTexts = new Label[1];
+        Label [] timeLabel = new Label[1];
+
+
 
         try {
 
@@ -51,37 +68,68 @@ public class NumbersPuzzle extends Application {
             System.out.println("ERROR: Couldn't load square image: " + e.getMessage());
         }
 
-        buttons[0] = new ImageView(squareImage);
+        Image button_shuffle;
+        try {
 
-        buttonTexts[0] = new Label("SHUFFLE");
-        buttonTexts[0].setStyle(" -fx-text-fill:#000000; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + 20 + ";");
+            button_shuffle = new Image(PicturePuzzle.class.getResourceAsStream("/button_shuffle.png"));
+        } catch (Exception e) {
+
+            button_shuffle = Utilities.createPlaceholderImage(100).getImage();
+            System.out.println("ERROR: Couldn't load shuffle button image: " + e.getMessage());
+        }
+
+        Image button_home;
+        try {
+
+            button_home = new Image(PicturePuzzle.class.getResourceAsStream("/button_home.png"));
+        } catch (Exception e) {
+
+            button_home = Utilities.createPlaceholderImage(100).getImage();
+            System.out.println("ERROR: Couldn't load home button image: " + e.getMessage());
+        }
+
+        Image button_pause;
+        try {
+
+            button_pause = new Image(PicturePuzzle.class.getResourceAsStream("/button_pause.png"));
+        } catch (Exception e) {
+
+            button_pause = Utilities.createPlaceholderImage(100).getImage();
+            System.out.println("ERROR: Couldn't load pause button image: " + e.getMessage());
+        }
+
+        Image button_sound;
+        try {
+
+            button_sound = new Image(PicturePuzzle.class.getResourceAsStream("/button_sound.png"));
+        } catch (Exception e) {
+
+            button_sound = Utilities.createPlaceholderImage(100).getImage();
+            System.out.println("ERROR: Couldn't load sound button image: " + e.getMessage());
+        }
+
+
+        buttons[0] = new ImageView(button_shuffle);
+        buttons[1] = new ImageView(button_home);
+        buttons[2] = new ImageView(button_pause);
+        buttons[3] = new ImageView(button_sound);
 
 
 
-//        Media soundResource_swipe = null;
-//        Media soundResource_swipe2 = null;
-//
-//        soundResource_swipe = new Media(new File("src/main/resources/swipe.mp3").toURI().toString());
-//        soundResource_swipe2 = new Media(new File("src/main/resources/swipe_2.mp3").toURI().toString());
-//
-//        MediaPlayer sound_swipe = new MediaPlayer(soundResource_swipe);
-//        MediaPlayer sound_swipe2 = new MediaPlayer(soundResource_swipe2);
-//
-//        sound_swipe.setVolume(0.5);
-//        sound_swipe2.setVolume(0.5);
-//
+//        buttonTexts[0] = new Label("SHUFFLE");
+//        buttonTexts[0].setStyle(" -fx-text-fill:#47321e; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + 20 + ";");
 
-// Get the URI of the sound file
-        String soundFileURI = getClass().getResource("/senVeBen.mp3").toString();
 
-// Create a Media object
-        Media sound = new Media(soundFileURI);
 
-// Create a MediaPlayer object
-        MediaPlayer mediaPlayer = new MediaPlayer(sound);
 
-// Play the sound
-        mediaPlayer.play();
+        try {
+            soundResource_swipe = new Media(new File("src/main/resources/swipe.mp3").toURI().toString());
+        } catch (Exception e) {
+
+            System.out.println("ERROR: Couldn't load sound effects: " + e.getMessage());
+        }
+
+
 
 
 
@@ -114,9 +162,6 @@ public class NumbersPuzzle extends Application {
 
 
 
-        ImageView [][] squares = new ImageView[SelectionMenu.getGridSize()][SelectionMenu.getGridSize()];
-        Label [][] numbers = new Label[SelectionMenu.getGridSize()][SelectionMenu.getGridSize()];
-        ElementProperties[][] ghostArray = Randomizer.getRandomArray(SelectionMenu.getGridSize(), "Number");
 
 
 
@@ -148,16 +193,16 @@ public class NumbersPuzzle extends Application {
             }
         }
 
+        timeLabel[0] = new Label("TIME: 0.000 seconds");
+        timeLabel[0].setStyle(" -fx-text-fill:#9fd5c1; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + 48 + ";");
+        timeLabel[0].setTranslateX(stage.getWidth() / 2 - timeLabel[0].getWidth() / 2);
+        timeLabel[0].setTranslateY(squares[SelectionMenu.getGridSize() - 1][0].getTranslateY() + getSize(stage) * 1.5);
+        pane.getChildren().add(timeLabel[0]);
 
         alignPosition(stage, squares);
         setLabels(stage, numbers, squares);
         cellBackground.setTranslateX(squares[0][0].getTranslateX() - getSize(stage) * 0.1);
         cellBackground.setTranslateY(squares[0][0].getTranslateY() - getSize(stage) * 0.1);
-
-        buttons[0].setFitWidth(getSize(stage) / 4.0 * 3.0);
-        buttons[0].setFitHeight(getSize(stage) / 16.0 * 3.0);
-        buttons[0].setTranslateX(stage.getWidth() / 4 - buttons[0].getFitWidth() / 2);
-        buttons[0].setTranslateY(stage.getHeight() / 2 - buttons[0].getFitHeight() / 2);
 
         DropShadow ds = new DropShadow(); //CSS EFFECT (DROPSHADOW)
         ds.setOffsetY(3.0f);
@@ -172,7 +217,7 @@ public class NumbersPuzzle extends Application {
 
         for (int i = 0; i < buttons.length; i++){
             pane.getChildren().add(buttons[i]);
-            pane.getChildren().add(buttonTexts[i]);
+//            pane.getChildren().add(buttonTexts[i]);
         }
 
         header.scaleXProperty().bind(pane.widthProperty().divide(Utilities.width()));
@@ -190,9 +235,9 @@ public class NumbersPuzzle extends Application {
             cellBackground.setFitWidth(getSize(stage) * SelectionMenu.getGridSize() + getSize(stage) * 0.2);
             cellBackground.setFitHeight(getSize(stage) * SelectionMenu.getGridSize() + getSize(stage) * 0.2);
 
-            alignButtonPosition(stage, buttons);
+            alignButtonPosition(stage, buttons, squares);
             alignButtonSize(stage, buttons);
-            setButtonTexts(stage, buttons, buttonTexts);
+//            setButtonTexts(stage, buttons, buttonTexts);
 
             setHeader(stage, header, squares);
         });
@@ -209,15 +254,50 @@ public class NumbersPuzzle extends Application {
             cellBackground.setFitWidth(getSize(stage) * SelectionMenu.getGridSize() + getSize(stage) * 0.2);
             cellBackground.setFitHeight(getSize(stage) * SelectionMenu.getGridSize() + getSize(stage) * 0.2);
 
-            alignButtonPosition(stage, buttons);
+            alignButtonPosition(stage, buttons, squares);
             alignButtonSize(stage, buttons);
-            setButtonTexts(stage, buttons, buttonTexts);
+//            setButtonTexts(stage, buttons, buttonTexts);
 
             setHeader(stage, header, squares);
 
         });
 
+//        buttonTexts[0].addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+//
+//            @Override
+//            public void handle(MouseEvent event) {
+//
+//
+//                buttons[0].setEffect(new Glow(0.9));
+//                event.consume();
+//            }
+//        });
 
+//        buttonTexts[0].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+//
+//            @Override
+//            public void handle(MouseEvent event) {
+//
+//                ghostArray = Randomizer.getRandomArray(SelectionMenu.getGridSize(), "Number");
+//                updateLabels(numbers, ghostArray);
+//                buttonPressedAnimation(buttons[0]);
+//                event.consume();
+//            }
+//
+//
+//        });
+
+
+
+        buttons[0].toFront();
+
+        Timeline updateTime = new Timeline(new KeyFrame(Duration.millis(1), event -> {
+            timeCounter++;
+            updateTimeLabel(stage, timeLabel[0]);
+        }));
+        updateTime.setCycleCount(Animation.INDEFINITE);
+        updateTime.play();
+        timeLabel[0].toFront();
 
         Timeline reAlignElements = new Timeline(new KeyFrame(Duration.seconds(0.05), event -> {
 
@@ -230,8 +310,8 @@ public class NumbersPuzzle extends Application {
             cellBackground.setFitHeight(getSize(stage) * SelectionMenu.getGridSize() + getSize(stage) * 0.2);
 
             alignButtonSize(stage, buttons);
-            alignButtonPosition(stage, buttons);
-            setButtonTexts(stage, buttons, buttonTexts);
+            alignButtonPosition(stage, buttons, squares);
+//            setButtonTexts(stage, buttons, buttonTexts);
             setHeader(stage, header, squares);
         }));
 
@@ -255,6 +335,10 @@ public class NumbersPuzzle extends Application {
                     emptySquareIndex = row * SelectionMenu.getGridSize() + col;
                 }
             }
+        }
+
+        for (int i = 0; i < buttons.length; i++){
+            addPressedFunction(stage, buttons[i], initialBackgroundMusic);
         }
 
         emptySquareCol = emptySquareIndex % SelectionMenu.getGridSize();
@@ -283,7 +367,7 @@ public class NumbersPuzzle extends Application {
                     if (emptySquareRow > 0) {
 
 
-//                        if (SelectionMenu.sounds) randomSwipeSound(sound_swipe, sound_swipe2);
+                        if (SelectionMenu.sounds) randomSwipeSound();
 
                         canPress = false;
 
@@ -323,7 +407,7 @@ public class NumbersPuzzle extends Application {
 
                     if (emptySquareRow > 0){
 
-//                        if (SelectionMenu.sounds) randomSwipeSound(sound_swipe, sound_swipe2);
+                        if (SelectionMenu.sounds) randomSwipeSound();
 
                         squares[emptySquareRow][emptySquareCol].setImage(squares[emptySquareRow - 1][emptySquareCol].getImage());
                         squares[emptySquareRow - 1][emptySquareCol].setImage(null);
@@ -357,7 +441,7 @@ public class NumbersPuzzle extends Application {
 
                     if (emptySquareRow < SelectionMenu.getGridSize() - 1) {
 
-//                        if (SelectionMenu.sounds) randomSwipeSound(sound_swipe, sound_swipe2);
+                        if (SelectionMenu.sounds) randomSwipeSound();
 
                         canPress = false;
 
@@ -397,7 +481,7 @@ public class NumbersPuzzle extends Application {
 
                     if (emptySquareRow < SelectionMenu.getGridSize() - 1){
 
-//                        if (SelectionMenu.sounds) randomSwipeSound(sound_swipe, sound_swipe2);
+                        if (SelectionMenu.sounds) randomSwipeSound();
 
                         squares[emptySquareRow][emptySquareCol].setImage(squares[emptySquareRow + 1][emptySquareCol].getImage());
                         squares[emptySquareRow + 1][emptySquareCol].setImage(null);
@@ -427,7 +511,7 @@ public class NumbersPuzzle extends Application {
 
                     if (emptySquareCol > 0) {
 
-//                        if (SelectionMenu.sounds) randomSwipeSound(sound_swipe, sound_swipe2);
+                        if (SelectionMenu.sounds) randomSwipeSound();
 
                         canPress = false;
 
@@ -466,7 +550,7 @@ public class NumbersPuzzle extends Application {
 
                     if (emptySquareCol > 0){
 
-//                        if (SelectionMenu.sounds) randomSwipeSound(sound_swipe, sound_swipe2);
+                        if (SelectionMenu.sounds) randomSwipeSound();
 
 
                         squares[emptySquareRow][emptySquareCol].setImage(squares[emptySquareRow][emptySquareCol - 1].getImage());
@@ -496,7 +580,7 @@ public class NumbersPuzzle extends Application {
 
                     if (emptySquareCol < SelectionMenu.getGridSize() - 1) {
 
-//                        if (SelectionMenu.sounds) randomSwipeSound(sound_swipe, sound_swipe2);
+                        if (SelectionMenu.sounds) randomSwipeSound();
 
                         canPress = false;
 
@@ -535,7 +619,7 @@ public class NumbersPuzzle extends Application {
 
                     if (emptySquareCol < SelectionMenu.getGridSize() - 1){
 
-//                        if (SelectionMenu.sounds) randomSwipeSound(sound_swipe, sound_swipe2);
+                        if (SelectionMenu.sounds) randomSwipeSound();
 
 
                         squares[emptySquareRow][emptySquareCol].setImage(squares[emptySquareRow][emptySquareCol + 1].getImage());
@@ -579,6 +663,8 @@ public class NumbersPuzzle extends Application {
 
             stage.getIcons().add(Utilities.createPlaceholderImage(128).getImage());
         }
+
+
 
         stage.setTitle("Slide Puzzle"); // APP TITLE
         stage.setScene(scene);
@@ -665,33 +751,53 @@ public class NumbersPuzzle extends Application {
     }
 
 
-    private void alignButtonPosition (Stage stage, ImageView[] buttons) {
+    private void alignButtonPosition (Stage stage, ImageView[] buttons, ImageView[][] squares) {
 
-        buttons[0].setTranslateX(stage.getWidth() / 4 - buttons[0].getFitWidth() / 2);
-        buttons[0].setTranslateY(stage.getHeight() / 2 - buttons[0].getFitHeight() / 2);
+        if (SelectionMenu.getGridSize() % 2 == 0){
+            buttons[0].setTranslateX(squares[0][0].getTranslateX() - getSize(stage) * 1.75);
+            buttons[0].setTranslateY(squares[0][0].getTranslateY() + getSize(stage) / 4);
+
+            buttons[1].setTranslateX(squares[SelectionMenu.getGridSize() - 1][0].getTranslateX() - getSize(stage) * 1.75);
+            buttons[1].setTranslateY(squares[SelectionMenu.getGridSize() - 1][0].getTranslateY());
+
+
+        } else {
+            buttons[0].setTranslateX(squares[0][0].getTranslateX() - getSize(stage) * 1.75);
+            buttons[0].setTranslateY(squares[0][0].getTranslateY() + getSize(stage) / 4);
+
+            buttons[1].setTranslateX(squares[SelectionMenu.getGridSize() - 1][0].getTranslateX() - getSize(stage) * 1.75);
+            buttons[1].setTranslateY(squares[SelectionMenu.getGridSize() - 1][0].getTranslateY());
+
+            buttons[2].setTranslateX(squares[0][SelectionMenu.getGridSize() - 1].getTranslateX() + getSize(stage) * 1.75);
+            buttons[2].setTranslateY(squares[0][SelectionMenu.getGridSize() - 1].getTranslateY() + getSize(stage) / 4);
+
+            buttons[3].setTranslateX(squares[SelectionMenu.getGridSize() - 1][SelectionMenu.getGridSize() - 1].getTranslateX() + getSize(stage) * 1.75);
+            buttons[3].setTranslateY(squares[SelectionMenu.getGridSize() - 1][SelectionMenu.getGridSize() - 1].getTranslateY());
+        }
 
     }
     private void alignButtonSize (Stage stage, ImageView[] buttons) {
 
-        buttons[0].setFitWidth(getSize(stage) / 4 * 3);
-        buttons[0].setFitHeight(getSize(stage) / 2);
-
-    }
-
-    private void setButtonTexts(Stage stage, ImageView[] buttons, Label[] buttonTexts){
-
         for (int i = 0; i < buttons.length; i++){
-
-            double size_double = (stage.getWidth() / 96.0);
-
-            int size = (int) (size_double - (size_double % 1.0));
-            buttonTexts[i].setStyle(" -fx-text-fill:#47321e; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + size + ";");
-
-            buttonTexts[i].setTranslateX(buttons[i].getTranslateX() + buttons[i].getFitWidth() / 2 - buttonTexts[i].getWidth() / 2);
-            buttonTexts[i].setTranslateY(buttons[i].getTranslateY() + buttons[i].getFitHeight() / 2 - buttonTexts[i].getHeight() / 2);
-
+            buttons[i].setFitWidth(getSize(stage) / 4 * 3);
+            buttons[i].setFitHeight(getSize(stage) / 4 * 3);
         }
     }
+
+//    private void setButtonTexts(Stage stage, ImageView[] buttons, Label[] buttonTexts){
+//
+//        for (int i = 0; i < buttons.length; i++){
+//
+//            double size_double = (stage.getWidth() / 96.0);
+//
+//            int size = (int) (size_double - (size_double % 1.0));
+//            buttonTexts[i].setStyle(" -fx-text-fill:#47321e; -fx-font-family: 'Tw Cen MT Condensed Extra Bold'; -fx-font-size: " + size + ";");
+//
+//            buttonTexts[i].setTranslateX(buttons[i].getTranslateX() + buttons[i].getFitWidth() / 2 - buttonTexts[i].getWidth() / 2);
+//            buttonTexts[i].setTranslateY(buttons[i].getTranslateY() + buttons[i].getFitHeight() / 2 - buttonTexts[i].getHeight() / 2);
+//
+//        }
+//    }
 
     private void setHeader(Stage stage, Label header, ImageView[][] squares){
 
@@ -714,14 +820,139 @@ public class NumbersPuzzle extends Application {
         }
     }
 
-    private void randomSwipeSound (MediaPlayer swipe, MediaPlayer swipe_2) { //github copilot
+    private void randomSwipeSound () {
 
-        if (random.nextBoolean()) {
+            MediaPlayer player1 = new MediaPlayer(soundResource_swipe);
+            player1.setVolume(0.15);
+            player1.play();
+    }
 
-            swipe.play();
+    private void buttonPressedAnimation(ImageView button){
+
+        button.setEffect(new Glow(0.9));
+
+        Timeline buttonPressedAnimation = new Timeline(new KeyFrame(Duration.millis(100), e -> {
+
+            button.setEffect(null);
+        }));
+
+        buttonPressedAnimation.setCycleCount(1);
+        buttonPressedAnimation.play();
+    }
+
+    private void backgroundMusicPlayer(){
+
+        try {
+            backgroundMusic = new Media(new File("src/main/resources/background_music.mp3").toURI().toString());
+
+        } catch (Exception exception) {
+
+            System.out.println("ERROR: Couldn't load background music: " + exception.getMessage());
+        }
+
+        Timeline bgMusic = new Timeline(new KeyFrame(Duration.seconds(1972), e -> {
+
+            MediaPlayer mediaPlayer = new MediaPlayer(soundResource_swipe);
+            mediaPlayer.setVolume(0.15);
+            mediaPlayer.play();
+        }));
+
+        bgMusic.setCycleCount(Animation.INDEFINITE);
+        bgMusic.play();
+    }
+    private void updateLabels(Label[][] numbers, ElementProperties[][] ghostArray){
+
+        for (int row = 0; row < SelectionMenu.getGridSize(); row++){
+            for (int col = 0; col < SelectionMenu.getGridSize(); col++){
+
+                if (ghostArray[row][col].index == 0){
+                    numbers[row][col].setText(" ");
+                } else {
+                    numbers[row][col].setText(String.valueOf(ghostArray[row][col].index));
+                }
+            }
+        }
+    }
+    private void updateTimeLabel(Stage stage, Label timeLabel){
+
+        if (timeCounter > 3600000){
+
+            int hour = (timeCounter - (timeCounter % 3600000)) / 3600000;
+            int minute = (timeCounter - (timeCounter % 60000)) / 60000 - hour * 60;
+            int second = (timeCounter - (timeCounter % 1000)) / 1000 - minute * 60;
+            timeLabel.setText("TIME: " + hour + "h "
+                    + minute + "m "
+                    + second + "." + timeCounter % 1000 + "s");
+
+        } else if (timeCounter > 60000){
+
+            int minute = (timeCounter - (timeCounter % 60000)) / 60000;
+            int second = (timeCounter - (timeCounter % 1000)) / 1000 - minute * 60;
+            timeLabel.setText("TIME: " + minute + "m "
+                    + second + "." + timeCounter % 1000 + "s");
+
         } else {
 
-            swipe_2.play();
+            int second = (timeCounter - (timeCounter % 1000)) / 1000;
+            timeLabel.setText("TIME: " + second + "." + timeCounter % 1000 + "s");
         }
+
+        timeLabel.setTranslateX(stage.getWidth() / 2 - timeLabel.getWidth() / 2);
+        timeLabel.setTranslateY(squares[SelectionMenu.getGridSize() - 1][0].getTranslateY() + getSize(stage) + getSize(stage) / 4);
+    }
+
+    private void addPressedFunction(Stage stage, ImageView button, MediaPlayer mediaPlayer){
+
+        button.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+
+                button.setEffect(new Glow(0.9));
+                event.consume();
+            }
+        });
+
+        button.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+
+                buttonFunction(stage, button, mediaPlayer);
+                event.consume();
+
+            }
+        });
+    }
+
+    private void buttonFunction(Stage stage, ImageView button, MediaPlayer mediaPlayer){
+
+
+        if (button == buttons[0]){
+            ghostArray = Randomizer.getRandomArray(SelectionMenu.getGridSize(), "Number");
+            updateLabels(numbers, ghostArray);
+            buttonPressedAnimation(button);
+        } else if (button == buttons[1]){
+            mainMenu(stage, mediaPlayer);
+        } else if (button == buttons[2]){
+            //PAUSE
+        } else if (button == buttons[3]){
+            //SOUND
+        }
+    }
+    private void mainMenu(Stage stage, MediaPlayer mediaPlayer) {
+
+        try {
+            Application application = SelectionMenu.class.newInstance();
+
+            Stage newStage = new Stage();
+            application.start(newStage);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+        mediaPlayer.stop();
+        stage.close();
     }
 }
