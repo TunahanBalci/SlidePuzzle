@@ -48,16 +48,24 @@ public class NumbersPuzzle extends Application {
     public void start(Stage stage) {
         Pane pane = new Pane();
 
-        backgroundMusicPlayer();
+        try {
+            backgroundMusic = new Media(new File("src/main/resources/background_music.mp3").toURI().toString());
 
-        MediaPlayer initialBackgroundMusic = new MediaPlayer(backgroundMusic);
-        initialBackgroundMusic.setVolume(0.15);
-        initialBackgroundMusic.play();
+        } catch (Exception exception) {
 
+            System.out.println("ERROR: Couldn't load background music: " + exception.getMessage());
+        }
 
-        Label [] buttonTexts = new Label[1];
+        MediaPlayer backgroundMusicPlayer = new MediaPlayer(backgroundMusic);
+        backgroundMusicPlayer.setVolume(0.15);
+        backgroundMusicPlayer.setOnEndOfMedia(new Runnable() {
+            public void run() {
+                backgroundMusicPlayer.seek(Duration.ZERO);
+            }
+        });
+        backgroundMusicPlayer.play();
+
         Label [] timeLabel = new Label[1];
-
 
 
         try {
@@ -338,7 +346,7 @@ public class NumbersPuzzle extends Application {
         }
 
         for (int i = 0; i < buttons.length; i++){
-            addPressedFunction(stage, buttons[i], initialBackgroundMusic);
+            addPressedFunction(stage, buttons[i], backgroundMusicPlayer);
         }
 
         emptySquareCol = emptySquareIndex % SelectionMenu.getGridSize();
@@ -840,26 +848,6 @@ public class NumbersPuzzle extends Application {
         buttonPressedAnimation.play();
     }
 
-    private void backgroundMusicPlayer(){
-
-        try {
-            backgroundMusic = new Media(new File("src/main/resources/background_music.mp3").toURI().toString());
-
-        } catch (Exception exception) {
-
-            System.out.println("ERROR: Couldn't load background music: " + exception.getMessage());
-        }
-
-        Timeline bgMusic = new Timeline(new KeyFrame(Duration.seconds(1972), e -> {
-
-            MediaPlayer mediaPlayer = new MediaPlayer(soundResource_swipe);
-            mediaPlayer.setVolume(0.15);
-            mediaPlayer.play();
-        }));
-
-        bgMusic.setCycleCount(Animation.INDEFINITE);
-        bgMusic.play();
-    }
     private void updateLabels(Label[][] numbers, ElementProperties[][] ghostArray){
 
         for (int row = 0; row < SelectionMenu.getGridSize(); row++){
