@@ -1,15 +1,8 @@
-module com.binarybrotherhood.slidepuzzle {
+module me.tunahanbalci.slidepuzzle {
     requires javafx.controls;
     requires javafx.fxml;
-    requires java.desktop;
-    requires java.management;
-    requires jdk.jdi;
-    requires javafx.swing;
-    requires javafx.base;
-    requires jdk.jshell;
-    requires javafx.media;
 
 
-    opens com.binarybrotherhood.slidepuzzle to javafx.fxml;
-    exports com.binarybrotherhood.slidepuzzle;
+    opens me.tunahanbalci.slidepuzzle to javafx.fxml;
+    exports me.tunahanbalci.slidepuzzle;
 }

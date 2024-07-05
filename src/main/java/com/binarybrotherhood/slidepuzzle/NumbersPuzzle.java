@@ -151,7 +151,7 @@ public class NumbersPuzzle extends Application {
         try {
             background = new ImageView(new Image(PicturePuzzle.class.getResourceAsStream("/background.png")));
         } catch (Exception e) {
-            background = Utilities.createPlaceholderImage((int) stage.getWidth());
+            background = Utilities.createPlaceholderImage(1000);
         }
 
         background.setPreserveRatio(false);
@@ -779,6 +779,7 @@ public class NumbersPuzzle extends Application {
 
             ghostArray = Randomizer.getRandomArray(SelectionMenu.getGridSize(), "Number");
             updateLabels(numbers, ghostArray);
+            setLabels(stage, numbers, squares);
             buttonPressedAnimation(button);
 
         } else if (button == buttons[1]) {

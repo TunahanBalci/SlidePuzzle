@@ -5,19 +5,19 @@ import java.util.Random;
 
 public class Randomizer {
 
-    public static ElementProperties[][] getRandomArray(int limit, String type){
+    public static ElementProperties[][] getRandomArray(int limit, String type) {
 
-        while (true){
+        while (true) {
 
             ElementProperties[][] candidate = createRandomArray(limit, type);
 
-            if (Checks.isSolvable(candidate)){
+            if (Checks.isSolvable(candidate)) {
                 return candidate;
             }
         }
     }
 
-    private static ElementProperties[][] createRandomArray(int limit, String type){
+    private static ElementProperties[][] createRandomArray(int limit, String type) {
 
         //START-------------------------------------------------
         // CREATE RANDOM OBJECT (FOR RANDOMIZED INDEX)
@@ -25,7 +25,6 @@ public class Randomizer {
         Random random = new Random();
 
         //END-------------------------------------------------
-
 
 
         //START-------------------------------------------------
@@ -39,23 +38,21 @@ public class Randomizer {
         //END-------------------------------------------------
 
 
-
         //START-------------------------------------------------
         // INITIALIZE EACH ELEMENT OF SOURCE ARRAY (DONE FOR OPTIMAL PERFORMANCE)
 
-        for (int i = 1; i < limit * limit ; i++){
+        for (int i = 1; i < limit * limit; i++) {
             initialNumbers.add(i);
         }
 
         //END-------------------------------------------------
 
 
-
         //START-------------------------------------------------
-        for (int row = 0; row < limit; row++){
-            for (int col = 0; col < limit; col++){
+        for (int row = 0; row < limit; row++) {
+            for (int col = 0; col < limit; col++) {
 
-                if (initialNumbers.isEmpty()){
+                if (initialNumbers.isEmpty()) {
                     break;
                 }
 
@@ -71,14 +68,12 @@ public class Randomizer {
         //END-------------------------------------------------
 
 
-
         //START-------------------------------------------------
         // FINALIZE THE ARRAY BY INITIALIZING ELEMENTS VIA CONSTRUCTOR
 
         returnArray[limit - 1][limit - 1] = new ElementProperties((0), type);
 
         //END-------------------------------------------------
-
 
 
         //START-------------------------------------------------

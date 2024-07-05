@@ -42,76 +42,89 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.binarybrotherhood.slidepuzzle.HelpController">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.binarybrotherhood.slidepuzzle.HelpController">
     <AnchorPane VBox.vgrow="ALWAYS">
         <Label id="headerSettings" layoutX="211.0" layoutY="167.0" text="SETTINGS" textFill="WHITE">
             <font>
-                <Font name="Tw Cen MT Condensed Extra Bold" size="31.0" />
+                <Font name="Tw Cen MT Condensed Extra Bold" size="31.0"/>
             </font>
         </Label>
-        <Rectangle arcHeight="5.0" arcWidth="5.0" height="427.0" layoutX="-8.0" layoutY="-9.0" stroke="BLACK" strokeType="INSIDE" width="664.0">
+        <Rectangle arcHeight="5.0" arcWidth="5.0" height="427.0" layoutX="-8.0" layoutY="-9.0" stroke="BLACK"
+                   strokeType="INSIDE" width="664.0">
             <fill>
                 <LinearGradient endX="1.0" endY="1.0" startY="1.0">
                     <stops>
                         <Stop>
                             <color>
-                                <Color red="0.22685185074806213" green="0.4706180989742279" blue="0.6447368264198303" />
+                                <Color red="0.22685185074806213" green="0.4706180989742279" blue="0.6447368264198303"/>
                             </color>
                         </Stop>
                         <Stop offset="1.0">
                             <color>
-                                <Color red="0.16349902749061584" green="0.33393436670303345" blue="0.8026315569877625" />
+                                <Color red="0.16349902749061584" green="0.33393436670303345" blue="0.8026315569877625"/>
                             </color>
                         </Stop>
                     </stops>
                 </LinearGradient>
             </fill>
         </Rectangle>
-        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#213443" height="381.0" layoutX="18.0" layoutY="14.0" stroke="BLACK" strokeType="INSIDE" width="624.0" />
-        <Label id="headerControls" fx:id="controlsHeader" layoutX="295.0" layoutY="23.0" text="HELP" textFill="WHITE" underline="true">
+        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#213443" height="381.0" layoutX="18.0" layoutY="14.0"
+                   stroke="BLACK" strokeType="INSIDE" width="624.0"/>
+        <Label id="headerControls" fx:id="controlsHeader" layoutX="295.0" layoutY="23.0" text="HELP" textFill="WHITE"
+               underline="true">
             <font>
-                <Font name="Tw Cen MT Condensed Extra Bold" size="31.0" />
+                <Font name="Tw Cen MT Condensed Extra Bold" size="31.0"/>
             </font>
         </Label>
-      <Label id="headerControls" fx:id="assignKeybindHeader" layoutX="360.0" layoutY="50.0" text="ASSIGNING KEYBIND" textFill="WHITE" underline="true" visible="false">
-         <font>
-            <Font name="Tw Cen MT Condensed Extra Bold" size="31.0" />
-         </font>
-      </Label>
-      <Button fx:id="selectImageButton" layoutX="123.0" layoutY="363.0" mnemonicParsing="false" text="Select New Image" visible="false">
-         <font>
-            <Font name="Tw Cen MT" size="13.0" />
-         </font>
-      </Button>
-      <Label layoutX="46.0" layoutY="54.0" text="NUMBER PUZZLE" textFill="WHITE" underline="true">
-         <font>
-            <Font name="Tw Cen MT Condensed Extra Bold" size="24.0" />
-         </font>
-      </Label>
-      <Label layoutX="46.0" layoutY="151.0" text="PİCTURE PUZZLE" textFill="WHITE" underline="true">
-         <font>
-            <Font name="Tw Cen MT Condensed Extra Bold" size="24.0" />
-         </font>
-      </Label>
-      <Label layoutX="46.0" layoutY="67.0" prefHeight="89.0" prefWidth="598.0" text="Arrange the numbers in order from left to right and top to &#10;bottom, with the blank space in the bottom-right corner." textFill="WHITE">
-         <font>
-            <Font name="Tw Cen MT" size="24.0" />
-         </font>
-      </Label>
-      <Label layoutX="46.0" layoutY="164.0" prefHeight="89.0" prefWidth="598.0" text="Arrange the blocks to form a complete image, with the blank &#10;space in the bottom-right corner.&#10;&#10;" textFill="WHITE">
-         <font>
-            <Font name="Tw Cen MT" size="24.0" />
-         </font>
-      </Label>
-      <Label layoutX="46.0" layoutY="230.0" prefHeight="124.0" prefWidth="598.0" text="Use keyboard keys to move adjacent blocks into the blank &#10;space. Plan your moves carefully to reach the goal.&#10;&#10;Good Luck!&#10;" textFill="WHITE">
-         <font>
-            <Font name="Tw Cen MT" size="24.0" />
-         </font>
-      </Label>
-      <Button fx:id="returnButton" layoutX="490.0" layoutY="310.0" mnemonicParsing="false" onAction="#mainMenu" prefHeight="64.0" prefWidth="118.0" text="RETURN ">
-         <font>
-            <Font name="Tw Cen MT Condensed Extra Bold" size="24.0" />
-         </font>
-      </Button>
+        <Label id="headerControls" fx:id="assignKeybindHeader" layoutX="360.0" layoutY="50.0" text="ASSIGNING KEYBIND"
+               textFill="WHITE" underline="true" visible="false">
+            <font>
+                <Font name="Tw Cen MT Condensed Extra Bold" size="31.0"/>
+            </font>
+        </Label>
+        <Button fx:id="selectImageButton" layoutX="123.0" layoutY="363.0" mnemonicParsing="false"
+                text="Select New Image" visible="false">
+            <font>
+                <Font name="Tw Cen MT" size="13.0"/>
+            </font>
+        </Button>
+        <Label layoutX="46.0" layoutY="54.0" text="NUMBER PUZZLE" textFill="WHITE" underline="true">
+            <font>
+                <Font name="Tw Cen MT Condensed Extra Bold" size="24.0"/>
+            </font>
+        </Label>
+        <Label layoutX="46.0" layoutY="151.0" text="PİCTURE PUZZLE" textFill="WHITE" underline="true">
+            <font>
+                <Font name="Tw Cen MT Condensed Extra Bold" size="24.0"/>
+            </font>
+        </Label>
+        <Label layoutX="46.0" layoutY="67.0" prefHeight="89.0" prefWidth="598.0"
+               text="Arrange the numbers in order from left to right and top to &#10;bottom, with the blank space in the bottom-right corner."
+               textFill="WHITE">
+            <font>
+                <Font name="Tw Cen MT" size="24.0"/>
+            </font>
+        </Label>
+        <Label layoutX="46.0" layoutY="164.0" prefHeight="89.0" prefWidth="598.0"
+               text="Arrange the blocks to form a complete image, with the blank &#10;space in the bottom-right corner.&#10;&#10;"
+               textFill="WHITE">
+            <font>
+                <Font name="Tw Cen MT" size="24.0"/>
+            </font>
+        </Label>
+        <Label layoutX="46.0" layoutY="230.0" prefHeight="124.0" prefWidth="598.0"
+               text="Use keyboard keys to move adjacent blocks into the blank &#10;space. Plan your moves carefully to reach the goal.&#10;&#10;Good Luck!&#10;"
+               textFill="WHITE">
+            <font>
+                <Font name="Tw Cen MT" size="24.0"/>
+            </font>
+        </Label>
+        <Button fx:id="returnButton" layoutX="490.0" layoutY="310.0" mnemonicParsing="false" onAction="#mainMenu"
+                prefHeight="64.0" prefWidth="118.0" text="RETURN ">
+            <font>
+                <Font name="Tw Cen MT Condensed Extra Bold" size="24.0"/>
+            </font>
+        </Button>
     </AnchorPane>
 </VBox>

@@ -1,6 +1,7 @@
 package com.binarybrotherhood.slidepuzzle;
 
 import javafx.scene.input.KeyCode;
+
 import java.io.*;
 import java.util.Properties;
 
